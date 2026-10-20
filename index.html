@@ -215,7 +215,8 @@ table.datos td.num{font-family:var(--f-dato);text-align:right}
 .ficha-final{white-space:pre-wrap;font-family:var(--f-dato);font-size:.82rem;background:var(--noche);border:1px solid var(--linea);border-radius:10px;padding:14px;max-height:340px;overflow:auto}
 
 /* portada */
-.portada{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:24px;align-items:stretch}
+.portada{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:24px;align-items:start}
+.portada .foto{height:clamp(360px,74vh,620px)}
 .portada h1{font-size:clamp(2.4rem,5.4vw,4.3rem);font-weight:800;letter-spacing:-.01em}
 .portada h1 em{font-style:normal;color:var(--cloro);text-shadow:0 0 28px color-mix(in srgb,var(--cloro) 45%,transparent)}
 .foto{position:relative;border-radius:var(--r);overflow:hidden;border:1px solid var(--linea);min-height:260px;background:#222}
