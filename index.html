@@ -729,7 +729,7 @@ table.datos td.num{font-family:var(--f-dato);text-align:right}
       <span class="eyebrow">Ficha de la visita</span>
       <p class="aviso">Copien la ficha y péguenla en el aula virtual o en el documento que indique su docente.</p>
       <div class="ficha-final" id="fichaTxt">Todavía no completaron el cuestionario: acá va a aparecer su ficha de la visita lista para copiar.</div>
-      <div class="fila"><button class="btn btn--sol" id="copiar">Copiar la ficha</button><span class="fb" id="fbCopia"></span></div>
+      <div class="fila"><button class="btn btn--sol" id="copiar">Copiar la ficha</button><span class="fb" id="fbCopia"></span><span class="fb" id="fbEnvio"></span></div>
     </div>
     <div class="pie"><span class="pend"></span><button class="btn" id="volverInicio">← Volver a la entrada</button></div>
   </section>
@@ -1619,7 +1619,19 @@ $('#corregir').addEventListener('click',()=>{
   let ok=0;Q.forEach((q,i)=>{const d=$(`.q[data-i="${i}"]`);$$('.opc button',d).forEach(b=>{b.disabled=true;const v=+b.dataset.v;if(v===q.k)b.classList.add('bien');if(v===S.quiz[i]&&v!==q.k)b.classList.add('mal')});if(S.quiz[i]===q.k)ok++});
   S.nota=ok;save();mostrarNota();
 });
-function mostrarNota(){$('#resultado').hidden=false;$('#nota').textContent=`${S.nota} de 10`;$('#corregir').disabled=true;S.done.cierre=true;save();pintarRiel();armarFicha()}
+function mostrarNota(){$('#resultado').hidden=false;$('#nota').textContent=`${S.nota} de 10`;$('#corregir').disabled=true;S.done.cierre=true;save();pintarRiel();armarFicha();enviarRegistro()}
+const SHEET_URL='https://script.google.com/macros/s/AKfycbwW7AZw0EoOUBi3Pz1wt7d5fqPZh72750Yy5IEkiXRGi30ndYIgEnZyXp2B66wSm3SV/exec';
+function enviarRegistro(){
+  if(S.reg)return;S.reg=1;save();
+  const aviso=$('#fbEnvio');
+  const d={inicio:S.t0?new Date(S.t0).toLocaleString('es-AR'):'',fin:new Date().toLocaleString('es-AR'),
+    est1:(S.txt.n1||'').trim(),est2:(S.txt.n2||'').trim(),curso:S.seccion?('1° '+S.seccion):'',
+    apuestaInicial:AP[S.apuesta]||S.apuesta||'',apuestaFinal:AP[S.apuesta2]||S.apuesta2||'',
+    veredicto:(S.txt.veredicto||'').trim(),nota:S.nota+'/10'};
+  fetch(SHEET_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(d)})
+    .then(function(){if(aviso)aviso.textContent='El registro del trabajo llegó a tu docente.'})
+    .catch(function(){S.reg=0;save();if(aviso)aviso.textContent='No se pudo enviar el registro: avisale a tu docente.'});
+}
 function armarFicha(){
   const t=S.txt;const L=[];
   L.push('LA FÁBRICA SECRETA DEL CARDÓN · Ficha de la visita');
