@@ -281,9 +281,9 @@ table.datos td.num{font-family:var(--f-dato);text-align:right}
 
 /* solapas por bloque dentro de cada estacion */
 .solapas{display:flex;flex-wrap:wrap;gap:6px;margin:16px 0 10px}
-.solapas button{font:inherit;font-size:.82rem;letter-spacing:.02em;padding:8px 14px;border-radius:10px 10px 0 0;border:1.5px solid rgba(126,224,160,.5);border-bottom:2px solid transparent;background:rgba(255,255,255,.04);color:#9fb4d8;cursor:pointer}
-.solapas button:hover:not(:disabled):not(.on){background:rgba(255,255,255,.08);color:#cfe0f5}
-.solapas button.on{background:rgba(94,242,143,.12);border-color:rgba(94,242,143,.55);color:#a8f5c4;font-weight:700}
+.solapas button{font:inherit;font-size:.82rem;letter-spacing:.02em;padding:8px 14px;border-radius:10px 10px 0 0;border:2px solid rgba(126,224,160,.8);border-bottom:2px solid rgba(126,224,160,.8);background:rgba(255,255,255,.05);color:#c4d6f0;cursor:pointer;box-shadow:0 0 9px rgba(94,242,143,.22),inset 0 0 8px rgba(94,242,143,.08)}
+.solapas button:hover:not(:disabled):not(.on){background:rgba(255,255,255,.1);border-color:#7ee0a0;color:#eaf2ff;box-shadow:0 0 14px rgba(94,242,143,.35),inset 0 0 8px rgba(94,242,143,.12)}
+.solapas button.on{background:rgba(94,242,143,.16);border-color:#5ef28f;color:#b6f9cd;font-weight:700;box-shadow:0 0 16px rgba(94,242,143,.45),inset 0 0 10px rgba(94,242,143,.16)}
 .solapas button:disabled{opacity:.32;cursor:not-allowed}
 .tabpane{display:none}
 .tabpane.tabOn{display:block}
