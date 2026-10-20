@@ -1526,23 +1526,24 @@ function crearMolle(){
   // hoja compuesta
   const hoja=new THREE.Group();const L=5.6;
   const eje=new THREE.CatmullRomCurve3([new THREE.Vector3(0,0,-L/2-.6),new THREE.Vector3(0,.22,-L/4),new THREE.Vector3(0,.3,0),new THREE.Vector3(0,.18,L/4),new THREE.Vector3(0,-.12,L/2)]);
-  const ejeM=new THREE.Mesh(new THREE.TubeGeometry(eje,60,.035,8),new THREE.MeshStandardMaterial({color:'#7d6a3e',roughness:.8}));hoja.add(ejeM);
+  const ejeM=new THREE.Mesh(new THREE.TubeGeometry(eje,60,.03,8),new THREE.MeshStandardMaterial({color:'#77853f',roughness:.75}));hoja.add(ejeM);
   const sh=new THREE.Shape();const N=24,lg=1.15,an=.12;
   for(let i=0;i<=N;i++){const t=i/N;const w=an*Math.pow(Math.sin(Math.PI*Math.pow(t,.8)),.9);i?sh.lineTo(t*lg,w):sh.moveTo(0,0)}
   for(let i=N;i>=0;i--){const t=i/N;const w=an*Math.pow(Math.sin(Math.PI*Math.pow(t,.8)),.9);sh.lineTo(t*lg,-w)}
   const fg=new THREE.ShapeGeometry(sh,1);const fp=fg.attributes.position;for(let i=0;i<fp.count;i++){const x=fp.getX(i),y=fp.getY(i);fp.setZ(i,-.12*x*x-1.2*y*y)}fg.computeVertexNormals();
   const fmat=new THREE.MeshStandardMaterial({color:'#6f9e3e',roughness:.55,side:THREE.DoubleSide,emissive:'#1b3d10',emissiveIntensity:.25});
   const nmat=new THREE.MeshBasicMaterial({color:'#c6e39a'});const ng=new THREE.PlaneGeometry(lg*.92,.012);ng.translate(lg*.46,0,.004);
-  const pares=11;let refFol=null;
-  for(let i=0;i<pares;i++){const t=.05+i/(pares)*.88;const P=eje.getPoint(t),T=eje.getTangent(t);
-    [-1,1].forEach(sd=>{const f=new THREE.Group();const m=new THREE.Mesh(fg,fmat);const nv=new THREE.Mesh(ng,nmat);f.add(m,nv);f.position.copy(P);
-      f.rotation.set(-Math.PI/2+.12*sd,0,0);f.rotateZ(sd>0?-(.95):(Math.PI+.95));f.rotateX(sd*.15);
-      const sc2=.7+.3*Math.sin(Math.PI*clamp(t*1.1,0,1));f.scale.setScalar(sc2);hoja.add(f);if(i===6&&sd>0)refFol=f})}
+  const pares=19;let refFol=null;
+  for(let i=0;i<pares;i++){const t=.05+i/(pares)*.88;
+    [-1,1].forEach(sd=>{const tt=sd>0?t:Math.min(t+.9/pares,1);const P=eje.getPoint(tt);
+      const f=new THREE.Group();const m=new THREE.Mesh(fg,fmat);const nv=new THREE.Mesh(ng,nmat);f.add(m,nv);f.position.copy(P);
+      f.rotation.set(-Math.PI/2+.1*sd,0,0);f.rotateZ(sd>0?-(1.02):(Math.PI+1.02));f.rotateX(sd*.1);
+      const sc2=.52+.48*Math.sin(Math.PI*clamp(tt*1.06,0,1));f.scale.setScalar(sc2);hoja.add(f);if(i===9&&sd>0)refFol=f})}
   const term=new THREE.Group();term.add(new THREE.Mesh(fg,fmat),new THREE.Mesh(ng,nmat));const PT=eje.getPoint(1);term.position.copy(PT);term.rotation.set(-Math.PI/2,0,-Math.PI/2);term.scale.setScalar(.85);hoja.add(term);
   hoja.rotation.y=.2;sc.add(hoja);
   hoja.updateMatrixWorld(true);const kids=hoja.children.filter(o=>o.isGroup);
   const wp=(g,x)=>g.localToWorld(new THREE.Vector3(x,0,.06));
-  const posP=[wp(kids[6],lg*.75),hoja.localToWorld(eje.getPoint(.28).add(new THREE.Vector3(0,.08,0))),wp(kids[13],lg*.4)];
+  const posP=[wp(kids[11],lg*.75),hoja.localToWorld(eje.getPoint(.28).add(new THREE.Vector3(0,.08,0))),wp(kids[29],lg*.4)];
   const spr=[];posP.forEach((p,i)=>{const s=etiqueta(i+1);s.scale.set(.42,.42,.42);s.position.copy(p);s.userData.pick={tipo:'punto',i};sc.add(s);V.picks.push(s);spr.push(s)});
   // corte del folíolo (bloque de tejidos)
   const bloque=new THREE.Group();bloque.visible=false;const W=4,D=1.8;
