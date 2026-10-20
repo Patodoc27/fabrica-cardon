@@ -111,6 +111,9 @@ mark{background:none;color:var(--cloro);font-weight:700}
 .regLista .fila small{color:var(--tenue);display:block;font-size:.8rem}
 .regLista .fila .nota{color:var(--sol);font-weight:700;white-space:nowrap}
 .regLista .muted{color:var(--tenue);margin:6px 0;font-size:.9rem}
+#btnRegPart{border:2px solid var(--sol);background:linear-gradient(160deg,color-mix(in srgb,var(--sol) 30%,var(--panel2)),var(--panel2));color:var(--sol);font-weight:700;letter-spacing:.3px;box-shadow:0 0 12px color-mix(in srgb,var(--sol) 45%,transparent),inset 0 0 10px color-mix(in srgb,var(--sol) 14%,transparent);animation:latido 2.2s ease-in-out infinite}
+#btnRegPart:hover{background:linear-gradient(160deg,color-mix(in srgb,var(--sol) 40%,var(--panel2)),var(--panel2))}
+@keyframes latido{50%{box-shadow:0 0 24px color-mix(in srgb,var(--sol) 75%,transparent),inset 0 0 14px color-mix(in srgb,var(--sol) 22%,transparent)}}
 .fb{min-height:1.2em;font-size:.95rem}
 .fb.bien{color:var(--cloro)}.fb.mal{color:var(--error)}.fb.neu{color:var(--tenue)}
 .campo{display:flex;flex-direction:column;gap:6px}
@@ -747,6 +750,7 @@ table.datos td.num{font-family:var(--f-dato);text-align:right}
 
     <div class="bloque">
       <span class="eyebrow">Cuestionario · 10 preguntas</span>
+      <p class="aviso" id="quizLock" style="margin:0 0 10px">El cuestionario se habilita cuando completan todas las actividades y escriben su veredicto.</p>
       <div id="quiz"></div>
       <div class="fila"><button class="btn btn--pri" id="corregir">Corregir</button><span class="aviso" id="quizFalta"></span></div>
       <div id="resultado" hidden style="display:flex;flex-direction:column;gap:10px">
@@ -820,7 +824,7 @@ const REQ={
  cardon:()=>{const f=[];if(!R.cardon.puntos)f.push('tocar los cinco puntos');if(!R.cardon.capa)f.push('encontrar la capa de la fábrica');if(!R.cardon.celula)f.push('rotular la célula');return f},
  molle:()=>{const f=[];if(!R.molle.puntos)f.push('tocar los tres puntos de la hoja');if(!R.molle.capa)f.push('encontrar las células con más cloroplastos');if(!R.molle.cmp)f.push('completar la comparación');return f},
  lab:()=>{const f=[];if(!R.lab.p)f.push('elegir la pregunta');if(!R.lab.h)f.push('escribir la hipótesis');if(!R.lab.v)f.push('clasificar las variables');if(!R.lab.run)f.push('correr el experimento');if(!R.lab.c)f.push('elegir la conclusión y explicar el vaso tapado');return f},
- cierre:()=>[]
+ cierre:()=>{const f=[];if(!S.apuesta2)f.push('decidir su apuesta final');if(!(S.txt.veredicto||'').trim())f.push('escribir el veredicto');if(S.nota===null)f.push('responder el cuestionario');return f}
 };
 
 /* =================== navegación =================== */
@@ -1655,7 +1659,7 @@ opciones($('#ctrl'),(v,b)=>{if(LC.k)return;if(v==='si'){b.classList.add('bien');
 function finLC(){if(LC.c&&LC.k){R.lab.c=1;$$('#pasosLab span')[4].classList.add('ok');marcarListo('lab')}}
 
 /* =================== 7 · cierre y cuestionario =================== */
-opciones($('#apuesta2'),(v,b)=>{S.apuesta2=v;save();
+opciones($('#apuesta2'),(v,b)=>{S.apuesta2=v;save();pintarQuizLock();
   const prev=S.apuesta;
   if(v==='aire')fb('fbAp2',prev==='aire'?'Mantuvieron su apuesta y ahora pueden explicarla: el dióxido de carbono del aire, con el agua, se transforma en glucosa, y con la glucosa la planta arma su madera.':'Cambiaron de idea con evidencia: la madera se arma con glucosa, y la glucosa se fabrica sobre todo con el dióxido de carbono del aire, más el agua.','bien');
   else fb('fbAp2','Revisen la estación de la fábrica: ¿qué ingredientes entran y cuál de ellos viene del aire?','mal')});
@@ -1684,6 +1688,12 @@ function grafQ(tipo){
     if(S.quiz[i]!==undefined){const b=$(`.opc [data-v="${S.quiz[i]}"]`,d);if(b)b.classList.add('sel')}
     box.appendChild(d)});
 })();
+function quizListo(){if(LIBRE)return true;
+  for(const s of ST){if(s.id==='cierre')continue;if(!S.done[s.id])return false}
+  return !!(S.apuesta2&&(S.txt.veredicto||'').trim())}
+function pintarQuizLock(){const lock=$('#quizLock');if(!lock)return;const ok=quizListo();
+  lock.hidden=ok;$('#quiz').style.display=ok?'':'none';const f=$('#corregir').closest('.fila');if(f)f.style.display=ok?'':'none'}
+$('#veredicto').addEventListener('input',pintarQuizLock);
 $('#corregir').addEventListener('click',()=>{
   const falta=Q.map((q,i)=>S.quiz[i]===undefined?i+1:null).filter(Boolean);
   if(falta.length){$('#quizFalta').textContent='Falta responder: '+falta.join(', ')+'.';return}
@@ -1784,7 +1794,7 @@ enter.cardon=()=>{if(!HAY3D){if(!$('#v3cardon .v3__sin')){sinWebGL('#v3cardon');
 leave.cardon=()=>VC&&VC.stop();
 enter.molle=()=>{if(!HAY3D){if(!$('#v3molle .v3__sin')){sinWebGL('#v3molle');$('#fichaMolle').innerHTML=PUNTOS_M.concat(CAPAS_M).map(p=>`<b>${p.t}:</b> ${p.d}`).join('<br>');R.molle.puntos=R.molle.capa=1}return}if(!VM)crearMolle();VM.start()};
 leave.molle=()=>VM&&VM.stop();
-enter.cierre=()=>{$('#apuestaVieja').textContent=AP[S.apuesta]||'(sin apuesta)';if(S.apuesta2){const b=$(`#apuesta2 [data-v="${S.apuesta2}"]`);if(b)b.classList.add('sel')}if(S.nota!==null){Q.forEach((q,i)=>{const d=$(`.q[data-i="${i}"]`);$$('.opc button',d).forEach(b=>{b.disabled=true;const v=+b.dataset.v;if(v===q.k)b.classList.add('bien');if(v===S.quiz[i]&&v!==q.k)b.classList.add('mal')})});mostrarNota()}};
+enter.cierre=()=>{$('#apuestaVieja').textContent=AP[S.apuesta]||'(sin apuesta)';if(S.apuesta2){const b=$(`#apuesta2 [data-v="${S.apuesta2}"]`);if(b)b.classList.add('sel')}if(S.nota!==null){Q.forEach((q,i)=>{const d=$(`.q[data-i="${i}"]`);$$('.opc button',d).forEach(b=>{b.disabled=true;const v=+b.dataset.v;if(v===q.k)b.classList.add('bien');if(v===S.quiz[i]&&v!==q.k)b.classList.add('mal')})});mostrarNota()}pintarQuizLock()};
 $('#hora').addEventListener('input',e=>{const hh=+e.target.value;const H=Math.floor(hh)%24,M=Math.round((hh%1)*60);$('#horaTxt').textContent=`${String(H).padStart(2,'0')}:${String(M).padStart(2,'0')}`;
   const L=luzMod(hh);$('#lLuz').textContent=Math.round(L*100)+' %';$('#lTemp').textContent=tempMod(hh).toFixed(0)+' °C';$('#lHum').textContent=Math.round(humMod(hh)*100)+' %';$('#lFab').textContent=L>0.02?'Sí':'No';
   if(hh<5||hh>21)R.ambiente.noche=1;if(hh>=11.5&&hh<=14.5)R.ambiente.dia=1;if(R.ambiente.noche&&R.ambiente.dia)marcarListo('ambiente');if(VP)VP.setHora(hh)});
