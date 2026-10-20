@@ -416,7 +416,7 @@ table.datos td.num{font-family:var(--f-dato);text-align:right}
         <p class="aviso">Lluvia promedio por mes en Tilcara, período 1934–1990. Datos: INTA. En un año caen 137 mm: 137 litros de agua sobre cada metro cuadrado.</p>
       </div>
       <div class="bloque">
-        <div class="consigna"><b>ELIJAN</b><span>Marquen las tres frases que describen el ambiente del cardón. Usen el gráfico y la escena.</span></div>
+        <div class="consigna"><b>ELIJAN</b><span>Marquen las tres frases que describen el ambiente del cardón. Usen el gráfico de lluvias y muevan la hora del día para comprobarlas.</span></div>
         <div class="opc" id="condiciones"></div>
         <div class="fb" id="fbCond"></div>
       </div>
@@ -639,7 +639,8 @@ table.datos td.num{font-family:var(--f-dato);text-align:right}
 
       <div id="lab2" hidden class="flujo" style="display:flex;flex-direction:column;gap:12px">
         <div class="guia"><div class="guia__av">L</div><div class="guia__t"><small>Cómo funciona</small>Con una jeringa se saca el aire de los discos y se hunden en agua con un poco de bicarbonato, que aporta dióxido de carbono. Cuando hacen fotosíntesis, el oxígeno que producen se junta dentro de la hoja y los discos <b>suben y flotan</b>. Cuantos más discos flotan en el mismo tiempo, más fotosíntesis hubo.</div></div>
-        <div class="consigna"><b>ESCRIBAN</b><span>Su hipótesis: una explicación posible que el experimento puede poner a prueba. Pueden empezar con “Creemos que…”.</span></div>
+        <p class="texto">En el experimento cambian una sola cosa: <b>la cantidad de luz</b> que recibe cada vaso. Todo lo demás queda igual. Lo que miden es <b>cuántos discos suben y flotan</b> en el mismo tiempo. Piensen: si una hoja recibe más luz, ¿hará más o menos fotosíntesis? ¿Los discos van a subir más rápido o más lento?</p>
+        <div class="consigna"><b>ESCRIBAN</b><span>Su hipótesis: qué creen que va a pasar con los discos cuando cambie la luz. Pueden empezar con “Creemos que si hay más luz…”.</span></div>
         <div class="campo"><label for="hipo">Hipótesis</label><textarea id="hipo" style="min-height:70px" placeholder="Creemos que…"></textarea></div>
         <button class="btn" id="okHipo" style="align-self:flex-start">Guardar hipótesis</button>
       </div>
@@ -963,14 +964,14 @@ const LLUVIA=[42,35,18,3,0,1,0,1,1,4,9,23];
   $('#lluvia').appendChild(svg);
 })();
 (function(){
-  const C=[{t:'Llueve poco: en todo el año caen 137 mm.',ok:1},{t:'El aire está húmedo durante todo el año.',ok:0},{t:'Las lluvias llegan en verano y el invierno es seco.',ok:1},{t:'Casi nunca hace frío, ni siquiera de noche.',ok:0},{t:'Hay mucha luz de sol durante el día.',ok:1}];
+  const C=[{t:'Llueve poco: en todo el año caen 137 mm.',ok:1},{t:'De noche también hay luz para la fábrica.',ok:0},{t:'Las lluvias llegan en verano y el invierno es seco.',ok:1},{t:'La temperatura es la misma de día y de noche.',ok:0},{t:'Hay mucha luz de sol durante el día.',ok:1}];
   const box=$('#condiciones');const sel=new Set();
   C.forEach((c,i)=>{const b=h('button',{},c.t);b.addEventListener('click',()=>{
     if(R.ambiente.cond)return;
     if(sel.has(i)){sel.delete(i);b.classList.remove('sel')}else{sel.add(i);b.classList.add('sel')}
     if(sel.size===3){const ok=[...sel].every(k=>C[k].ok);
       if(ok){R.ambiente.cond=1;$$('button',box).forEach((x,k)=>{x.classList.remove('sel');if(C[k].ok)x.classList.add('bien')});fb('fbCond','Correcto: poca lluvia, concentrada en verano, y mucho sol.','bien');marcarListo('ambiente')}
-      else fb('fbCond','Alguna no corresponde. Revisen el gráfico y las temperaturas de la noche en la escena.','mal')}
+      else fb('fbCond','Alguna no corresponde. Revisen el gráfico de lluvias y muevan la hora del día para comprobar cada frase.','mal')}
     else fb('fbCond','');
   });box.appendChild(b)});
 })();
