@@ -1689,14 +1689,14 @@ $('#corregir').addEventListener('click',()=>{
   S.nota=ok;save();mostrarNota();
 });
 function mostrarNota(){$('#resultado').hidden=false;$('#nota').textContent=`${S.nota} de 10`;$('#corregir').disabled=true;S.done.cierre=true;save();pintarRiel();armarFicha();enviarRegistro()}
-const SHEET_URL='https://script.google.com/macros/s/AKfycbwW7AZw0EoOUBi3Pz1wt7d5fqPZh72750Yy5IEkiXRGi30ndYIgEnZyXp2B66wSm3SV/exec';
+const SHEET_URL='https://script.google.com/macros/s/AKfycbxSIDhIeQHFZQJWb3lATc5VznT0QhcABQHOQzB4Z9MWdoOff-9OryC1QHAdk-ktOdho/exec';
 function enviarRegistro(){
   if(S.reg)return;S.reg=1;save();
   const aviso=$('#fbEnvio');
   const d={inicio:S.t0?new Date(S.t0).toLocaleString('es-AR'):'',fin:new Date().toLocaleString('es-AR'),
     est1:(S.txt.n1||'').trim(),est2:(S.txt.n2||'').trim(),curso:S.seccion?('1° '+S.seccion):'',
     apuestaInicial:AP[S.apuesta]||S.apuesta||'',apuestaFinal:AP[S.apuesta2]||S.apuesta2||'',
-    veredicto:(S.txt.veredicto||'').trim(),nota:S.nota+'/10'};
+    veredicto:(S.txt.veredicto||'').trim(),nota:S.nota};
   fetch(SHEET_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(d)})
     .then(function(){if(aviso)aviso.textContent='El registro del trabajo llegó a tu docente.'})
     .catch(function(){S.reg=0;save();if(aviso)aviso.textContent='No se pudo enviar el registro: avisale a tu docente.'});
@@ -1710,6 +1710,19 @@ function cargarRegistro(){
     REG.data=Array.isArray(rows)?rows:[];pintarReg(REG.cur);
   }).catch(function(){box.innerHTML='<p class="muted">No se pudo cargar el registro. Revisen la conexión y toquen "Actualizar lista".</p>'});
 }
+function notaDe(v){
+  if(typeof v==='number'&&!isNaN(v))return Math.round(v);
+  const s=(v||'').toString();
+  const m=s.match(/(\d{1,2})\s*\/\s*10/);if(m)return +m[1];
+  const d=new Date(s);
+  if(!isNaN(d)&&d.getUTCMonth()===9)return d.getUTCDate(); /* "8/10" quedó como fecha 8-oct en la planilla */
+  return NaN;
+}
+function fechaDe(v){
+  const d=new Date(v);
+  if(isNaN(d))return (v||'').toString();
+  return d.toLocaleDateString('es-AR',{day:'numeric',month:'short'})+' '+d.toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'});
+}
 function pintarReg(cur){
   REG.cur=cur;const box=$('#regLista');if(!box)return;
   const map={};
@@ -1717,10 +1730,10 @@ function pintarReg(cur){
     const c=(r.curso||'').toString().toUpperCase().replace(/[^AB]/g,'');
     if(c!==cur)return;
     const nombre=[r.est1,r.est2].map(function(x){return (x||'').trim()}).filter(Boolean).join(' y ')||'—';
-    const n=parseInt((r.nota||'').toString(),10);
-    if(!nombre||isNaN(n))return;
+    const n=notaDe(r.nota);
+    if(!nombre||isNaN(n)||n<0||n>10)return;
     const k=nombre.toLowerCase();
-    if(!map[k]||n>map[k].n)map[k]={nombre:nombre,n:n,fin:r.fin};
+    if(!map[k]||n>map[k].n)map[k]={nombre:nombre,n:n,fin:fechaDe(r.fin)};
   });
   const arr=Object.keys(map).map(function(k){return map[k]}).sort(function(a,b){return b.n-a.n});
   if(!arr.length){box.innerHTML='<p class="muted">Todavía no hay equipos registrados en este curso.</p>';return}
