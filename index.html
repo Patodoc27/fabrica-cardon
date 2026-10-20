@@ -852,7 +852,7 @@ secs.forEach((sec,i)=>{
     if(falta.length&&!S.done[id]&&!S.doc){p.textContent='Para seguir les falta: '+falta.join(', ')+'.';p.className='pend mal';return}
     S.done[id]=true;S.unl=Math.max(S.unl,i+1);p.textContent='';
     if(id==='entrada'&&!S.t0)S.t0=Date.now();
-    save();ir(i+1);
+    save();ir(i+1<ST.length?i+1:0);
   });
 });
 function marcarListo(id){const sec=secs[ST.findIndex(s=>s.id===id)];const p=$('.pend',sec);if(!REQ[id]().length){p.textContent='Estación completa.';p.className='pend';p.style.color='var(--cloro)'}}
