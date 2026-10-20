@@ -592,10 +592,10 @@ table.datos td.num{font-family:var(--f-dato);text-align:right}
     <div class="guia"><div class="guia__av">L</div><div class="guia__t"><small>Lucía · guía del Jardín</small>Si el cardón no tiene hojas verdes, ¿dónde están sus fábricas? Exploren el modelo en tres dimensiones.</div></div>
     <div class="bloque">
       <span class="eyebrow">El cardón en 3D</span>
-      <div class="consigna"><b>EXPLOREN</b><span>Giren el cardón y toquen los cinco puntos verdes. Después córtenlo para ver el tallo por dentro.</span></div>
-      <div class="v3" id="v3cardon"><div class="v3__ayuda" id="ayudaCardon">Arrastren para girar · toquen los puntos</div></div>
-      <div class="fila"><button class="btn btn--sol" id="btnCortar" disabled>Cortar el tallo</button><button class="btn" id="btnArmar" hidden>Volver a armar el cardón</button><span class="aviso" id="avisoCortar">Se habilita después de tocar los cinco puntos.</span></div>
-      <div class="ficha3d" id="fichaCardon" aria-live="polite"><b>Toquen un punto verde.</b></div>
+      <div class="consigna"><b>EXPLOREN</b><span>Miren el cardón girar, toquen «Detener» y recorran los cinco puntos verdes. Después córtenlo para ver el tallo por dentro.</span></div>
+      <div class="v3" id="v3cardon"><div class="v3__ayuda" id="ayudaCardon">Gira solo · toquen «Detener» para ver los puntos</div></div>
+      <div class="fila"><button class="btn btn--sol" id="btnParar">Detener</button><button class="btn btn--sol" id="btnCortar" disabled>Cortar el tallo</button><button class="btn" id="btnArmar" hidden>Volver a armar el cardón</button><span class="aviso" id="avisoCortar">Se habilita después de tocar los cinco puntos.</span></div>
+      <div class="ficha3d" id="fichaCardon" aria-live="polite"><b>Miren el cardón girar. Cuando quieran, toquen «Detener» para recorrer sus puntos.</b></div>
       <div class="fb" id="fbCapa"></div>
     </div>
 
@@ -1519,7 +1519,12 @@ function crearCardon(){
   const C=cardon({H:7.2,R:.48,ribs:22,dep:.15,detalle:true,seed:11,brazos:[{y:3.3,ang:.5,largo:2.4},{y:3.9,ang:3.3,largo:1.9,esc:.66}]});sc.add(C);
   sc.add(new THREE.HemisphereLight('#cfe3ff','#4a3a2a',.55));const d=new THREE.DirectionalLight('#fff3dc',1.3);d.position.set(6,10,5);sc.add(d);const d2=new THREE.DirectionalLight('#7aa8ff',.6);d2.position.set(-6,4,-6);sc.add(d2);
   // puntos
-  const spr=[];PUNTOS_C.forEach((p,i)=>{const s=etiqueta(i+1);s.scale.set(.55,.55,.55);s.position.set(...p.p);const pp=new THREE.Vector3(...p.p);if(i<3){const n=new THREE.Vector3(pp.x,0,pp.z).normalize();s.position.add(n.multiplyScalar(.35))}s.userData.pick={tipo:'punto',i};sc.add(s);V.picks.push(s);spr.push(s)});
+  const spr=[];PUNTOS_C.forEach((p,i)=>{const s=etiqueta(i+1);s.scale.set(.55,.55,.55);s.position.set(...p.p);const pp=new THREE.Vector3(...p.p);if(i<3){const n=new THREE.Vector3(pp.x,0,pp.z).normalize();s.position.add(n.multiplyScalar(.35))}s.userData.pick={tipo:'punto',i};s.visible=false;sc.add(s);V.picks.push(s);spr.push(s)});
+  // Detener: la rotación se pausa y recién ahí aparecen los puntos
+  let parado=false;
+  const pintarParar=()=>{$('#btnParar').textContent=parado?'Seguir girando':'Detener';$('#ayudaCardon').textContent=parado?'Arrastren para girar · toquen los puntos':'Gira solo · toquen «Detener» para ver los puntos'};
+  $('#btnParar').addEventListener('click',()=>{parado=!parado;V.autoRotate=!parado;spr.forEach(s=>s.visible=parado);pintarParar()});
+  pintarParar();
   // disco del corte
   const cutY=2.5,RC=.48,ribs=22,dep=.15;const disco=new THREE.Group();disco.visible=false;
   const fR=(a,f)=>RC*f*(1-dep*sstep(.55,1,f)*.5*(1-Math.cos(ribs*a)))*(1-.06*cutY/7.2);
@@ -1544,11 +1549,11 @@ function crearCardon(){
         else fb('fbCapa','Esa no es la capa de la fábrica. Busquen la que tiene células con cloroplastos.','mal')}}
   };
   $('#btnCortar').addEventListener('click',()=>{
-    C.traverse(o=>{if(o.material){o.material.clippingPlanes=[plano];o.material.needsUpdate=true}});spr.forEach(s=>s.visible=false);disco.visible=true;V.autoRotate=false;
+    C.traverse(o=>{if(o.material){o.material.clippingPlanes=[plano];o.material.needsUpdate=true}});spr.forEach(s=>s.visible=false);disco.visible=true;V.autoRotate=false;$('#btnParar').hidden=true;
     V.fly(new THREE.Vector3(0,cutY,0),2.3,V.theta,.62,1500);$('#btnCortar').hidden=true;$('#btnArmar').hidden=false;$('#avisoCortar').textContent='';
     $('#ayudaCardon').textContent='Toquen las capas del corte';$('#fichaCardon').innerHTML='<b>El tallo, cortado.</b><br>Toquen cada capa. ¿En cuál está la fábrica de alimento?';
   });
-  $('#btnArmar').addEventListener('click',()=>{C.traverse(o=>{if(o.material){o.material.clippingPlanes=[];o.material.needsUpdate=true}});spr.forEach(s=>s.visible=true);disco.visible=false;V.fly(new THREE.Vector3(0,3.6,0),12.5,V.theta,1.35);$('#btnArmar').hidden=true;$('#btnCortar').hidden=false;$('#ayudaCardon').textContent='Arrastren para girar · toquen los puntos'});
+  $('#btnArmar').addEventListener('click',()=>{C.traverse(o=>{if(o.material){o.material.clippingPlanes=[];o.material.needsUpdate=true}});parado=true;V.autoRotate=false;spr.forEach(s=>s.visible=true);disco.visible=false;V.fly(new THREE.Vector3(0,3.6,0),12.5,V.theta,1.35);$('#btnArmar').hidden=true;$('#btnCortar').hidden=false;$('#btnParar').hidden=false;pintarParar()});
 }
 /* célula para rotular */
 (function(){
