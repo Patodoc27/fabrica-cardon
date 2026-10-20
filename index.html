@@ -524,6 +524,7 @@ table.datos td.num{font-family:var(--f-dato);text-align:right}
       <p class="aviso">La luz no es un reactivo: es la energía que hace posible la transformación.</p>
       <p class="texto"><i>Foto</i> significa luz; <i>síntesis</i>, armar. La <mark>fotosíntesis</mark> es el proceso con el que las plantas fabrican su propia materia orgánica: con <span class="t-agua">agua</span> y <span class="t-gas">dióxido de carbono</span>, y usando la energía de la <span class="t-sol">luz</span>, fabrican <span class="t-cloro">glucosa</span> y liberan <span class="t-gas">oxígeno</span> al aire. Ocurre en los <b>cloroplastos</b>, unas estructuras verdes de sus células.</p>
       <p class="texto">La glucosa es un hidrato de carbono, un azúcar. La planta la usa como <b>material</b> para construir su cuerpo (la madera y las paredes de sus células se arman a partir de ella) y como <b>fuente de energía</b>.</p>
+      <p class="texto">Además de la fotosíntesis, en todas las células de la planta ocurre otro proceso, de día y de noche, que usa la glucosa para obtener energía: la respiración celular. La van a estudiar más adelante.</p>
       <div class="consigna"><b>RESPONDAN</b><span>Con lo que acaban de descubrir: la madera del cardón está hecha, sobre todo, con…</span></div>
       <div class="opc" id="chkMadera">
         <button data-v="min">minerales que las raíces sacaron de la tierra</button>
@@ -546,30 +547,6 @@ table.datos td.num{font-family:var(--f-dato);text-align:right}
       <p class="texto">La planta es un <b>sistema abierto</b>: toma materia y energía del ambiente, las transforma y devuelve materia al ambiente.</p>
     </div>
 
-    <div class="bloque" id="parte6" hidden>
-      <span class="eyebrow">Fotosíntesis y respiración</span>
-      <div class="dos">
-        <div class="colFR">
-          <h4>Fotosíntesis</h4>
-          <ul>
-            <li><b>Cuándo:</b> solo cuando hay luz.</li>
-            <li><b>Dónde:</b> en las células con cloroplastos (la capa verde del tallo del cardón, los folíolos del molle).</li>
-            <li><b>Usa:</b> dióxido de carbono y agua.</li>
-            <li><b>Produce:</b> glucosa y oxígeno.</li>
-          </ul>
-        </div>
-        <div class="colFR">
-          <h4>Respiración celular</h4>
-          <ul>
-            <li><b>Cuándo:</b> de día y de noche, sin parar.</li>
-            <li><b>Dónde:</b> en todas las células vivas de la planta, también en las de la raíz, dentro de las mitocondrias.</li>
-            <li><b>Usa:</b> glucosa y oxígeno.</li>
-            <li><b>Produce:</b> dióxido de carbono, agua y la energía que la célula necesita para vivir.</li>
-          </ul>
-        </div>
-      </div>
-      <p class="texto">Lo que una fabrica, la otra lo usa. De noche el cardón no hace fotosíntesis, pero sigue vivo porque respira. La respiración celular la van a estudiar más adelante.</p>
-    </div>
     <div class="pie"><span class="pend"></span><button class="btn btn--pri sig">Buscar la fábrica en el cardón →</button></div>
   </section>
 
@@ -733,7 +710,7 @@ table.datos td.num{font-family:var(--f-dato);text-align:right}
         <li>Hacen fotosíntesis las plantas, las algas y las cianobacterias.</li>
         <li>Reactivos: dióxido de carbono y agua. Productos: glucosa y oxígeno. La luz aporta la energía.</li>
         <li>Ocurre en los cloroplastos: en el cardón, en la capa verde del tallo; en el molle, en los folíolos.</li>
-        <li>Solo ocurre con luz. La respiración celular ocurre siempre, de día y de noche.</li>
+        <li>La fotosíntesis solo ocurre cuando hay luz.</li>
         <li>La fotosíntesis es parte del metabolismo: transforma materia inorgánica en materia orgánica.</li>
         <li>El cardón es autótrofo: fabrica su propia materia orgánica.</li>
       </ul>
@@ -1248,7 +1225,7 @@ function actualizarCtl(){
   FAB.on=tasa>0;$('#fGlow').setAttribute('opacity',tasa);$('#fSol').setAttribute('opacity',.25+.75*luz);$('#fRayos').setAttribute('opacity',luz);
   if(!P2.t1&&P2.p1&&a&&g&&!l){P2.t1=true;pn('c1p2','ok');pn('c1p3','ok');$('#tLuz').classList.remove('atencion');casoHecho(1);
     const ok=P2.p1==='para';$('#res1').hidden=false;$('#res1').className='resC'+(ok?'':' mal');
-    $('#res1').innerHTML='El medidor quedó en <b>0</b>: sin luz no hay energía y la fábrica se detiene por completo.'+(ok?' <b>Su predicción coincidió.</b>':' <b>No coincidió con su predicción</b>: no baja un poco, se detiene del todo.')+' Aunque la fábrica se detenga, la planta sigue viva: usa la glucosa que fabricó con luz mediante la respiración celular.';
+    $('#res1').innerHTML='El medidor quedó en <b>0</b>: sin luz no hay energía y la fábrica se detiene por completo.'+(ok?' <b>Su predicción coincidió.</b>':' <b>No coincidió con su predicción</b>: no baja un poco, se detiene del todo.')+'';
     fb('fb1','','neu');marcarListo('fabrica')}
   if(!P2.t2&&P2.p2&&a&&g&&l&&I>0&&I<=60){P2.t2=true;pn('c2p2','ok');pn('c2p3','ok');$('#campoLuz').classList.remove('atencion');casoHecho(2);
     const ok=P2.p2==='menos';$('#res2').hidden=false;$('#res2').className='resC'+(ok?'':' mal');
@@ -1401,7 +1378,7 @@ ORGS.forEach(c=>{
   $$('button',d).forEach(b=>b.addEventListener('click',()=>{
     if(d.classList.contains('bien'))return;
     if(+b.dataset.v===c.si){d.classList.remove('mal');d.classList.add('bien');d.querySelector('.fila').innerHTML=`<small>✓ ${c.si?'Hace fotosíntesis':'No hace fotosíntesis'}${c.f?' · '+c.f:''}</small>`;okOrg++;
-      if(okOrg===ORGS.length){R.fabrica.org=1;$('#parte6').hidden=false;fb('fbOrg','Las siete están bien clasificadas.','bien');marcarListo('fabrica')}
+      if(okOrg===ORGS.length){R.fabrica.org=1;fb('fbOrg','Las siete están bien clasificadas.','bien');marcarListo('fabrica')}
       else fb('fbOrg',c.si?'Bien: tiene clorofila para captar la luz.':c.f,'bien')}
     else{shake(d);fb('fbOrg',c.si?'Piensen de nuevo: ¿tiene clorofila para captar la luz?':'Piensen de nuevo: ¿fabrica su materia orgánica o la obtiene comiendo?','mal')}
   }));cog.appendChild(d)});
