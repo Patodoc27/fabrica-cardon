@@ -750,10 +750,10 @@ secs.forEach((sec,i)=>{
   });
 });
 function marcarListo(id){const sec=secs[ST.findIndex(s=>s.id===id)];const p=$('.pend',sec);if(!REQ[id]().length){p.textContent='Estación completa.';p.className='pend';p.style.color='var(--cloro)'}}
-$('#modoDoc').addEventListener('click',()=>{S.doc=true;save();pintarRiel();$('#modoDoc').textContent='Todas las estaciones están desbloqueadas'});
+$('#modoDoc').addEventListener('click',()=>{S.doc=true;save();pintarRiel();_libreAll();$('#modoDoc').textContent='Todas las estaciones están desbloqueadas'});
 /* MODO LIBRE (?libre en la URL): revisión docente — todas las estaciones y actividades abiertas, sin requisitos */
 const LIBRE=/[?&]libre/.test(location.search);
-const _libreAll=()=>{document.querySelectorAll('button[disabled]').forEach(b=>{if(!b.dataset.keepdisabled)b.disabled=false});document.querySelectorAll('[hidden]').forEach(e=>{if(!(e.classList&&e.classList.contains('est')))e.hidden=false});document.querySelectorAll('.solapas').forEach(bar=>{const f=Array.prototype.find.call(bar.children,b=>!b.disabled);if(f)f.click()})};
+const _libreAll=()=>{document.querySelectorAll('button[disabled]').forEach(b=>{if(!b.dataset.keepdisabled)b.disabled=false});document.querySelectorAll('[hidden]').forEach(e=>{if(!(e.classList&&e.classList.contains('est')))e.hidden=false});document.querySelectorAll('.solapas button').forEach(b=>{b.disabled=false;b.title=''})};
 if(LIBRE){
   S.doc=true;
   const _irLibre=ir;ir=i=>{_irLibre(i);_libreAll()};
@@ -775,7 +775,7 @@ function tabificar(){
       t.disabled=p.hidden;t.title=p.hidden?'Se desbloquea al avanzar en la estación':'';
       t.addEventListener('click',()=>{if(!t.disabled)activar(i)});
       bar.appendChild(t);
-      new MutationObserver(()=>{const lib=!p.hidden;t.disabled=!lib;t.title=lib?'':'Se desbloquea al avanzar en la estación';if(lib)activar(i)}).observe(p,{attributes:true,attributeFilter:['hidden']});
+      new MutationObserver(()=>{const lib=LIBRE||!p.hidden;t.disabled=!lib;t.title=lib?'':'Se desbloquea al avanzar en la estación';if(lib&&!LIBRE)activar(i)}).observe(p,{attributes:true,attributeFilter:['hidden']});
     });
     sec.insertBefore(bar,panes[0]);
     let ini=panes.findIndex(p=>!p.hidden);activar(ini<0?0:ini);
@@ -784,7 +784,6 @@ function tabificar(){
 tabificar();
 if(LIBRE){
   window.addEventListener('load',()=>setTimeout(_libreAll,1200));
-  document.addEventListener('click',()=>setTimeout(_libreAll,400),true);
 }
 $('#volverInicio').addEventListener('click',()=>ir(0));
 setInterval(()=>{if(!S.t0)return;const m=Math.floor((Date.now()-S.t0)/60000);$('#reloj b').textContent=m;$('#reloj b').style.color=m>80?'var(--error)':'var(--sol)'},5000);
