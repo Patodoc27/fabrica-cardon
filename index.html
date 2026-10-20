@@ -1532,7 +1532,8 @@ function crearMolle(){
   for(let i=N;i>=0;i--){const t=i/N;const w=an*Math.pow(Math.sin(Math.PI*Math.pow(t,.8)),.9);sh.lineTo(t*lg,-w)}
   const fg=new THREE.ShapeGeometry(sh,1);const fp=fg.attributes.position;for(let i=0;i<fp.count;i++){const x=fp.getX(i),y=fp.getY(i);fp.setZ(i,-.12*x*x-1.2*y*y)}fg.computeVertexNormals();
   const fmat=new THREE.MeshStandardMaterial({color:'#6f9e3e',roughness:.55,side:THREE.DoubleSide,emissive:'#1b3d10',emissiveIntensity:.25});
-  const nmat=new THREE.MeshBasicMaterial({color:'#c6e39a'});const ng=new THREE.PlaneGeometry(lg*.92,.012);ng.translate(lg*.46,0,.004);
+  const nmat=new THREE.MeshBasicMaterial({color:'#c6e39a'});const ng=new THREE.PlaneGeometry(lg*.92,.012,8);ng.translate(lg*.46,0,0);
+  const np=ng.attributes.position;for(let i=0;i<np.count;i++){const x=np.getX(i),y=np.getY(i);np.setZ(i,-.12*x*x-1.2*y*y+.006)}
   const pares=19;let refFol=null;
   for(let i=0;i<pares;i++){const t=.05+i/(pares)*.88;
     [-1,1].forEach(sd=>{const tt=sd>0?t:Math.min(t+.9/pares,1);const P=eje.getPoint(tt);
