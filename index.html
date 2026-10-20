@@ -288,6 +288,15 @@ table.datos td.num{font-family:var(--f-dato);text-align:right}
 .tabpane{display:none}
 .tabpane.tabOn{display:block}
 .tabpane[hidden]{display:none}
+/* escucha: lee en voz alta los textos visibles (accesibilidad) */
+.escucha{position:fixed;right:16px;bottom:16px;z-index:80;display:flex;gap:8px;align-items:center}
+.escucha button{display:flex;align-items:center;gap:8px;font:inherit;font-weight:700;font-size:.85rem;padding:10px 16px;border-radius:999px;border:2px solid rgba(126,224,160,.8);background:rgba(19,26,46,.92);color:#b6f9cd;cursor:pointer;box-shadow:0 4px 18px rgba(0,0,0,.45),0 0 10px rgba(94,242,143,.2)}
+.escucha button:hover{background:rgba(94,242,143,.14);border-color:#5ef28f;color:#d7ffe2}
+.escucha button svg{width:18px;height:18px;flex:none}
+.escucha.on #btnEscuchar{background:rgba(94,242,143,.18);border-color:#5ef28f}
+.escucha #btnPausaEsc{padding:10px 12px}
+.escucha button[hidden]{display:none}
+@media (max-width:560px){.escucha{right:10px;bottom:10px}.escucha button{font-size:.78rem;padding:9px 12px}}
 </style>
 </head>
 <body>
@@ -735,6 +744,11 @@ table.datos td.num{font-family:var(--f-dato);text-align:right}
     <div class="pie"><span class="pend"></span><button class="btn" id="volverInicio">← Volver a la entrada</button></div>
   </section>
   </main>
+</div>
+
+<div class="escucha" id="escucha" title="Escuchar los textos de esta pantalla">
+  <button id="btnEscuchar" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9.4 9.4 0 0 1 0 13"/></svg><span>Escuchar</span></button>
+  <button id="btnPausaEsc" type="button" hidden>Pausa</button>
 </div>
 
 <script>/* three.js r128 embebido */
@@ -1701,6 +1715,51 @@ $('#hora').addEventListener('input',e=>{const hh=+e.target.value;const H=Math.fl
   const L=luzMod(hh);$('#lLuz').textContent=Math.round(L*100)+' %';$('#lTemp').textContent=tempMod(hh).toFixed(0)+' °C';$('#lHum').textContent=Math.round(humMod(hh)*100)+' %';$('#lFab').textContent=L>0.02?'Sí':'No';
   if(hh<5||hh>21)R.ambiente.noche=1;if(hh>=11.5&&hh<=14.5)R.ambiente.dia=1;if(R.ambiente.noche&&R.ambiente.dia)marcarListo('ambiente');if(VP)VP.setHora(hh)});
 $('#hora').dispatchEvent(new Event('input'));
+
+/* ===== lectura en voz alta: voz latinoamericana femenina si hay ===== */
+(function(){
+  const syn=window.speechSynthesis,wrap=$('#escucha');
+  if(!syn||!wrap){if(wrap)wrap.hidden=true;return}
+  const btn=$('#btnEscuchar'),btnP=$('#btnPausaEsc');
+  let voces=[];const cargarVoces=()=>{voces=syn.getVoices()};cargarVoces();
+  if(syn.addEventListener)syn.addEventListener('voiceschanged',cargarVoces);else syn.onvoiceschanged=cargarVoces;
+  function vozLatina(){
+    const es=voces.filter(v=>v.lang&&v.lang.toLowerCase().substr(0,2)==='es');
+    if(!es.length)return null;
+    const LAT=['419','mx','us','ar','co','cl','pe','ve','ec','bo','py','uy','gt','cu','do','sv','hn','ni','pa','cr','pr'];
+    const l=v=>{const s=v.lang.toLowerCase().replace('_','-');return LAT.some(r=>s==='es-'+r)};
+    const f=v=>/monica|mónica|paulina|sabina|dalia|camila|laura|lupe|penelope|penélope|elena|helena|sofia|sofía|carmen|female|mujer|isabel|isabela/i.test(v.name);
+    const n=v=>/google|microsoft|natural|online|neural|premium|enhanced/i.test(v.name);
+    const sc=v=>(l(v)?4:(v.lang.toLowerCase().replace('_','-')!=='es-es'?2:0))+(f(v)?3:0)+(n(v)?1:0);
+    return es.slice().sort((a,b)=>sc(b)-sc(a))[0];
+  }
+  let cola=[],leyendo=false;
+  function textosVisibles(){
+    const sec=document.querySelector('section.est:not([hidden])');if(!sec)return[];
+    const SEL='h1,h2,h3,.guia__t,.consigna,.texto,.aviso,.campo>label,.chip,.lecturas>div,.opc>button,.zoomsteps>button,.carta,.ficha3d,.ficha-final,.nota,.pend,.hueco,.cmp';
+    const out=[],seen=new Set();
+    sec.querySelectorAll(SEL).forEach(e=>{
+      if(e.hidden||e.offsetParent===null)return;
+      const t=(e.innerText||'').trim().replace(/\s+/g,' ');
+      if(t.length>2&&!seen.has(t)){seen.add(t);out.push(t)}
+    });
+    return out;
+  }
+  function estado(){wrap.classList.toggle('on',leyendo);btn.querySelector('span').textContent=leyendo?'Detener':'Escuchar';btnP.hidden=!leyendo;btnP.textContent=syn.paused?'Reanudar':'Pausa'}
+  function leer(i){
+    if(i>=cola.length){parar();return}
+    const u=new SpeechSynthesisUtterance(cola[i]);const v=vozLatina();
+    if(v)u.voice=v;u.lang=v?v.lang:'es-419';u.rate=1;
+    u.onend=()=>{if(leyendo)leer(i+1)};
+    u.onerror=()=>{if(leyendo)leer(i+1)};
+    syn.speak(u);
+  }
+  function empezar(){syn.cancel();cola=textosVisibles();if(!cola.length)return;leyendo=true;estado();leer(0)}
+  function parar(){leyendo=false;syn.cancel();estado()}
+  btn.addEventListener('click',()=>{leyendo?parar():empezar()});
+  btnP.addEventListener('click',()=>{if(syn.paused){syn.resume()}else{syn.pause()}estado()});
+  document.addEventListener('click',e=>{if(leyendo&&e.target.closest&&e.target.closest('.paso,.solapas button,.sig,#volverInicio'))parar()});
+})();
 
 /* arranque */
 if(S.unl>=ST.length)S.unl=ST.length-1;
