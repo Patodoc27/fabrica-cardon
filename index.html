@@ -68,13 +68,13 @@ button,input,select,textarea{font:inherit;color:inherit}
 .cab{display:flex;flex-direction:column;gap:10px}
 .eyebrow{font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;color:var(--cloro);font-weight:700}
 .cab h2{font-size:clamp(1.9rem,3.6vw,2.8rem);font-weight:800}
-.cab p{color:var(--tenue);max-width:100ch}
+.cab p{color:var(--tenue)}
 .chips{display:flex;flex-wrap:wrap;gap:8px}
 .chip{font-size:.8rem;padding:4px 10px;border-radius:99px;border:1px solid var(--linea);color:var(--tenue)}
 .chip b{color:var(--tinta);font-weight:700}
 .bloque{background:var(--panel);border:1.5px solid color-mix(in srgb,var(--cloro) 32%,var(--linea));border-radius:var(--r);padding:22px;display:flex;flex-direction:column;gap:14px;min-width:0}
 .bloque h3{font-size:1.3rem}
-.bloque > p,.texto{max-width:100ch}
+.bloque > p,.texto{max-width:none}
 .consigna{display:flex;gap:12px;align-items:flex-start;padding:12px 14px;border-radius:10px;background:var(--panel2);border:1px solid color-mix(in srgb,var(--sol) 35%,var(--panel2));border-left:4px solid var(--sol)}
 .consigna b{color:var(--sol);font-family:var(--f-dato);font-size:.8rem;letter-spacing:.06em;white-space:nowrap;padding-top:3px}
 .guia{display:flex;gap:14px;align-items:flex-start}
@@ -111,7 +111,7 @@ mark{background:none;color:var(--cloro);font-weight:700}
 .campo input,.campo select,.campo textarea{background:var(--noche);border:1.5px solid var(--linea);border-radius:10px;padding:10px 12px;width:100%}
 .campo textarea{min-height:92px;resize:vertical}
 .pie{display:flex;flex-wrap:wrap;gap:14px;align-items:center;justify-content:space-between;padding-top:6px;border-top:1px solid var(--linea)}
-.pie .pend{font-size:.9rem;color:var(--tenue);max-width:90ch}
+.pie .pend{font-size:.9rem;color:var(--tenue)}
 .pie .pend.mal{color:var(--error)}
 
 /* visor 3D */
@@ -199,7 +199,7 @@ table.datos td.num{font-family:var(--f-dato);text-align:right}
 .q{display:flex;flex-direction:column;gap:10px;padding:18px 0;border-top:1px solid var(--linea)}
 .q:first-child{border-top:0}
 .q__n{font-family:var(--f-dato);color:var(--sol);font-size:.85rem}
-.q__e{font-weight:700;max-width:100ch}
+.q__e{font-weight:700}
 .q .opc button{display:grid;grid-template-columns:28px 1fr;gap:8px}
 .q .opc button b{font-family:var(--f-dato);color:var(--tenue)}
 .nota{font-family:var(--f-disp);font-size:2.2rem;font-weight:800;color:var(--cloro)}
@@ -825,6 +825,18 @@ const _libreAll=()=>{document.querySelectorAll('button[disabled]').forEach(b=>{i
 if(LIBRE){
   S.doc=true;
   const _irLibre=ir;ir=i=>{_irLibre(i);_libreAll()};
+}
+else{
+  /* anti-copia: no copiar el contenido ni pegar texto traído de afuera */
+  const esCampo=e=>e.target&&e.target.closest&&e.target.closest('input,textarea,[contenteditable="true"]');
+  document.addEventListener('copy',e=>e.preventDefault());
+  document.addEventListener('cut',e=>e.preventDefault());
+  document.addEventListener('dragstart',e=>e.preventDefault());
+  document.addEventListener('contextmenu',e=>e.preventDefault());
+  document.addEventListener('selectstart',e=>{if(!esCampo(e))e.preventDefault()});
+  document.addEventListener('paste',e=>{if(esCampo(e)){e.preventDefault();const el=e.target.closest('input,textarea,[contenteditable="true"]');if(el){el.classList.add('mal');setTimeout(()=>el.classList.remove('mal'),800)}}});
+  document.body.style.webkitUserSelect='none';document.body.style.userSelect='none';
+  const stSinSel=document.createElement('style');stSinSel.textContent='input,textarea,[contenteditable="true"]{-webkit-user-select:text;user-select:text}';document.head.appendChild(stSinSel);
 }
 /* solapas: cada .bloque directo de una estacion es una pestaña; se ve una sola seccion por vez */
 function tabificar(){
