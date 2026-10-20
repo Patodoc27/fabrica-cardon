@@ -212,13 +212,22 @@ table.datos td.num{font-family:var(--f-dato);text-align:right}
 .foto{position:relative;border-radius:var(--r);overflow:hidden;border:1px solid var(--linea);min-height:260px;background:#222}
 .foto img{width:100%;height:100%;object-fit:cover;display:block}
 .foto figcaption{position:absolute;left:0;right:0;bottom:0;padding:10px 12px;font-size:.78rem;background:linear-gradient(transparent,rgba(5,8,16,.88));color:#d9e2f2}
-.plan{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
-.plan div{padding:10px;border-radius:10px;background:var(--panel2);font-size:.85rem}
-.plan b{display:block;font-family:var(--f-dato);color:var(--sol);font-size:.78rem}
-.datos-jb{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px}
-.datos-jb div{padding:12px;border-radius:10px;background:var(--panel2)}
-.datos-jb b{display:block;font-family:var(--f-dato);font-size:1.25rem;color:var(--sol)}
-.datos-jb span{font-size:.85rem;color:var(--tenue)}
+.recuadro-jb{border:2px solid var(--sol);background:var(--panel2);border-radius:14px;padding:18px 22px;margin:14px 0}
+.recuadro-jb h3{margin:0 0 12px;color:var(--sol);font-size:1.25rem}
+.recuadro-jb dl{display:grid;grid-template-columns:170px minmax(0,1fr);gap:7px 18px;margin:0}
+.recuadro-jb dt{font-family:var(--f-dato);font-size:.78rem;color:var(--sol);text-transform:uppercase;letter-spacing:.05em;padding-top:3px}
+.recuadro-jb dd{margin:0}
+.ecufija{border:2px solid var(--sol);border-radius:14px;background:var(--panel2);padding:20px 22px;margin:16px 0;display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;gap:18px}
+.ecufija__col{display:flex;flex-direction:column;gap:6px;text-align:center}
+.ecufija__tag{font-family:var(--f-dato);font-size:.75rem;letter-spacing:.1em;color:var(--sol)}
+.ecufija__txt{font-family:var(--f-disp);font-size:1.3rem;font-weight:800;line-height:1.25}
+.ecufija__fle{display:flex;flex-direction:column;align-items:center;gap:2px}
+.ecufija__fle i{font-style:normal;font-family:var(--f-dato);font-weight:700;color:var(--sol);font-size:.95rem}
+.ecufija__fle b{font-size:1.7rem;line-height:1}
+.ecufija__fle small{font-size:.72rem;color:var(--tenue)}
+.colFR{background:var(--panel2);border:1.5px solid var(--linea);border-radius:12px;padding:14px 18px}
+.colFR h4{margin:0 0 8px;font-family:var(--f-disp);color:var(--sol)}
+.colFR ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:4px}
 .lecturas{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
 .lecturas div{padding:10px 12px;border-radius:10px;background:var(--panel2)}
 .lecturas b{display:block;font-family:var(--f-dato);font-size:1.25rem}
@@ -235,6 +244,10 @@ table.datos td.num{font-family:var(--f-dato);text-align:right}
 @media (max-width:640px){
   body{font-size:16px}
   .dos,.tres,.ctl{grid-template-columns:minmax(0,1fr)}
+  .recuadro-jb dl{grid-template-columns:minmax(0,1fr);gap:2px 0}
+  .recuadro-jb dd{margin-bottom:8px}
+  .ecufija{grid-template-columns:minmax(0,1fr)}
+  .ecufija__fle b{transform:rotate(90deg);display:inline-block}
   .lecturas{grid-template-columns:repeat(2,minmax(0,1fr))}
   .bloque{padding:16px}
   .v3{aspect-ratio:4/3.4}
@@ -296,15 +309,15 @@ table.datos td.num{font-family:var(--f-dato);text-align:right}
       <div class="cab" style="gap:16px">
         <span class="eyebrow">Visita virtual · Ciencias Naturales</span>
         <h1>La fábrica secreta del <em>cardón</em></h1>
-        <p style="font-size:1.08rem">Van a recorrer el Jardín Botánico de Altura de Tilcara para responder una pregunta: <b style="color:var(--tinta)">¿cómo fabrican su alimento dos plantas muy distintas, el cardón, que no tiene hojas verdes, y el molle, un árbol cubierto de hojas?</b></p>
+        <p style="font-size:1.08rem">Van a recorrer el Jardín Botánico de Altura de Tilcara para responder una pregunta: <b style="color:var(--tinta)">¿cómo dos plantas muy distintas —el cardón, que no tiene hojas verdes, y el molle, un árbol cubierto de hojas— fabrican materia orgánica a partir de materia inorgánica?</b></p>
         <div class="bloque" style="padding:18px">
           <h3>Pase de entrada</h3>
-          <div class="dos">
-            <div class="campo"><label for="n1">Integrante 1 (nombre y apellido)</label><input id="n1" autocomplete="off"></div>
-            <div class="campo"><label for="n2">Integrante 2 (si trabajan de a dos)</label><input id="n2" autocomplete="off"></div>
-          </div>
-          <div class="campo" style="max-width:220px"><label for="curso">Curso</label>
-            <select id="curso"><option value="">Elegir…</option><option>1° A</option><option>1° B</option></select></div>
+          <div class="campo"><label>¿Cuántos estudiantes hacen la cápsula?</label>
+            <div class="opc" id="cantEst" style="display:flex;flex-wrap:wrap;gap:8px"><button data-v="1">Un estudiante</button><button data-v="2">Dos estudiantes</button></div></div>
+          <div class="campo"><label for="n1">Nombre y apellido</label><input id="n1" autocomplete="off"></div>
+          <div class="campo" id="campoN2" style="display:none"><label for="n2">Nombre y apellido</label><input id="n2" autocomplete="off"></div>
+          <div class="campo"><label>Sección</label>
+            <div class="opc" id="seccion" style="display:flex;flex-wrap:wrap;gap:8px"><button data-v="A">Sección A</button><button data-v="B">Sección B</button></div></div>
         </div>
       </div>
       <figure class="foto" style="margin:0">
@@ -327,11 +340,6 @@ table.datos td.num{font-family:var(--f-dato);text-align:right}
       <div class="campo"><label for="apuestaPq">¿Por qué piensan eso? (una oración alcanza)</label><textarea id="apuestaPq" style="min-height:64px"></textarea></div>
     </div>
 
-    <details class="bloque">
-      <summary style="cursor:pointer;font-weight:700">Plan de la clase para el docente (80 minutos)</summary>
-      <div class="plan" id="planDoc"></div>
-      <p class="aviso">El avance se guarda en esta computadora. Para revisar la cápsula sin completar actividades: <button class="btn" id="modoDoc" style="padding:6px 10px;font-size:.85rem">Desbloquear todas las estaciones</button></p>
-    </details>
     <div class="pie"><span class="pend"></span><button class="btn btn--pri sig">Entrar al Jardín →</button></div>
   </section>
 
@@ -350,18 +358,26 @@ table.datos td.num{font-family:var(--f-dato);text-align:right}
       <div class="fb" id="fbJB"></div>
       <div class="concepto bloque" id="defJB" hidden>
         <span class="eyebrow">Ahora tiene nombre</span>
-        <p class="texto">Un <mark>jardín botánico</mark> es una colección de plantas vivas, identificadas y registradas, que se cuida para <b>investigarlas, conservarlas y enseñar</b> sobre ellas. Las plantas no están solo para adornar: cada una tiene su nombre científico y su historia. El 14 de octubre es el Día de los Jardines Botánicos.</p>
+        <p class="texto">Un <mark>jardín botánico</mark> es una colección de plantas vivas, identificadas con su nombre científico y registradas, que se cuida para <b>investigarlas, conservarlas y enseñar</b> sobre ellas. Por eso no es una plaza ni un vivero: cada planta está ahí por una razón y tiene su historia.</p>
+        <h3>¿Por qué son importantes?</h3>
+        <p class="texto">Protegen plantas que podrían desaparecer: guardan semillas y reproducen especies de la región. Permiten investigar, por ejemplo, cómo controlar la polilla que ataca a los cardones. Enseñan a escuelas y visitantes a conocer y cuidar la flora. Y reúnen el saber científico con el saber popular, como el uso medicinal de las plantas de la Quebrada.</p>
       </div>
     </div>
 
     <div class="bloque">
       <h3>El Jardín de Tilcara</h3>
-      <div class="datos-jb">
-        <div><b class="dato">1970</b><span>Se inauguró, tras un convenio de 1968 entre la Facultad de Filosofía y Letras (UBA) y la provincia de Jujuy.</span></div>
-        <div><b class="dato">2.580 m</b><span>sobre el nivel del mar, en el cono de piedras que formó el río Huasamayo.</span></div>
-        <div><b class="dato">≈ 3 ha</b><span>de superficie: unas tres manzanas de una ciudad.</span></div>
-        <div><b class="dato">2003</b><span>La UNESCO declaró a la Quebrada de Humahuaca Patrimonio Mundial, por su paisaje natural y cultural.</span></div>
-      </div>
+      <aside class="recuadro-jb">
+        <h3>Jardín Botánico de Altura de Tilcara</h3>
+        <dl>
+          <dt>Dónde</dt><dd>En el predio del Pucará de Tilcara, Quebrada de Humahuaca (Jujuy), sobre el cono de piedras que formó el río Huasamayo.</dd>
+          <dt>Altura</dt><dd>2.580 m sobre el nivel del mar.</dd>
+          <dt>Superficie</dt><dd>Unas 3 hectáreas.</dd>
+          <dt>Origen</dt><dd>Convenio de 1968 entre la Facultad de Filosofía y Letras (UBA) y el gobierno de Jujuy. Se inauguró en 1970.</dd>
+          <dt>Sectores</dt><dd>Cactarios, Hierbas de altura (con una estación meteorológica desde 1986), Cultivos andinos, Aromáticas y medicinales, Árboles y arbustos y la Piedra Campana.</dd>
+          <dt>Planta emblema</dt><dd>El cardón o pasacana, la más abundante de la Quebrada.</dd>
+          <dt>Paisaje protegido</dt><dd>La Quebrada de Humahuaca es Patrimonio Mundial (UNESCO, 2003).</dd>
+        </dl>
+      </aside>
       <div class="consigna"><b>RECORRAN</b><span>Toquen los seis puntos del mapa para conocer cada sector. Busquen dónde viven las dos plantas protagonistas.</span></div>
       <div class="dos" style="align-items:start">
         <div class="svgbox" id="mapaJB"></div>
@@ -377,7 +393,7 @@ table.datos td.num{font-family:var(--f-dato);text-align:right}
       <span class="eyebrow">Estación 2 · Sección Cactarios</span>
       <h2>El cardón y su ambiente</h2>
       <div class="chips"><span class="chip">Lugar <b>Cactarios</b></span><span class="chip">Tiempo <b>≈ 7 min</b></span></div>
-      <p>El cardón o pasacana (<i>Trichocereus atacamensis</i>, como figura en el catálogo del Jardín) cubre las laderas pedregosas de la Quebrada. Puede superar los 10 metros. Junto a él, una persona de 1,7 m sirve de escala.</p>
+      <p>El cardón o pasacana (<i>Trichocereus atacamensis</i>, como figura en el catálogo del Jardín) cubre las laderas pedregosas de la Quebrada. Puede llegar a unos 10 metros de altura. Junto a él, una persona de 1,7 m sirve de escala.</p>
     </div>
     <div class="bloque">
       <div class="consigna"><b>OBSERVEN</b><span>Giren la escena arrastrando y muevan la hora del día. Lleven el sol a la noche y al mediodía y miren qué pasa con la luz y la temperatura.</span></div>
@@ -414,7 +430,7 @@ table.datos td.num{font-family:var(--f-dato);text-align:right}
       <span class="eyebrow">Estación 3 · Box del Jardín</span>
       <h2>La fábrica de alimento</h2>
       <div class="chips"><span class="chip">Lugar <b>Box de Botánica</b></span><span class="chip">Tiempo <b>≈ 15 min</b></span></div>
-      <p>Toda planta verde tiene, dentro de sus células, pequeñas fábricas. Antes de ponerles nombre, averigüen qué necesitan para funcionar.</p>
+      <p>Las células verdes de las plantas tienen pequeñas fábricas. Antes de ponerles nombre, averigüen qué necesitan para funcionar.</p>
     </div>
 
     <div class="bloque">
@@ -436,6 +452,7 @@ table.datos td.num{font-family:var(--f-dato);text-align:right}
       <p class="texto">Una sola hoja tiene millones de cloroplastos: esta es <b>una</b> de esas fábricas, muy aumentada. Ahora averigüen qué necesita para funcionar.</p>
       <div class="consigna"><b>PRUEBEN</b><span>Toquen los ingredientes que creen que entran en la fábrica. Si uno no entra, la guía les dice por qué.</span></div>
       <div class="svgbox" id="fabricaSvg"></div>
+      <p class="aviso">Esquema simplificado: en la planta real, los estomas están en la piel, el agua llega desde la raíz por conductos y cada célula verde tiene muchos cloroplastos.</p>
       <div class="bandeja" id="bandeja"></div>
       <div class="fb neu" id="fbFab" aria-live="polite">La fábrica está apagada.</div>
     </div>
@@ -485,11 +502,11 @@ table.datos td.num{font-family:var(--f-dato);text-align:right}
 
     <div class="bloque" id="parte3" hidden>
       <span class="eyebrow">Parte 4 · La receta en palabras</span>
-      <div class="consigna"><b>ARMEN</b><span>Toquen una ficha y después el hueco donde va. Lo que entra va a la izquierda; la energía, sobre la flecha; lo que se fabrica, a la derecha.</span></div>
+      <div class="consigna"><b>ARMEN</b><span>Toquen una ficha y después el hueco donde va. Los <b>reactivos</b> (lo que entra) van a la izquierda; la <b>energía</b>, sobre la flecha; los <b>productos</b> (lo que se forma), a la derecha.</span></div>
       <div class="ecu" id="ecu">
-        <div class="hueco" data-h="r1">entra…</div><span>+</span><div class="hueco" data-h="r2">entra…</div>
+        <div class="hueco" data-h="r1">reactivo…</div><span>+</span><div class="hueco" data-h="r2">reactivo…</div>
         <div class="flecha"><div class="hueco" data-h="e">energía…</div><span>⟶</span></div>
-        <div class="hueco" data-h="p1">se fabrica…</div><span>+</span><div class="hueco" data-h="p2">se fabrica…</div>
+        <div class="hueco" data-h="p1">producto…</div><span>+</span><div class="hueco" data-h="p2">producto…</div>
       </div>
       <div class="fichas" id="fichasEcu"></div>
       <div class="fb" id="fbEcu"></div>
@@ -498,8 +515,16 @@ table.datos td.num{font-family:var(--f-dato);text-align:right}
     <div class="bloque concepto" id="parte4" hidden>
       <span class="eyebrow">Ahora tiene nombre</span>
       <h3>Fotosíntesis</h3>
-      <p class="texto"><i>Foto</i> significa luz; <i>síntesis</i>, armar. La <mark>fotosíntesis</mark> es el proceso con el que las plantas fabrican su propio alimento: con <span class="t-agua">agua</span> y <span class="t-gas">dióxido de carbono</span>, y usando la energía de la <span class="t-sol">luz</span>, fabrican <span class="t-cloro">glucosa</span> y liberan <span class="t-gas">oxígeno</span> al aire. Ocurre en los <b>cloroplastos</b>, unas estructuras verdes de sus células.</p>
-      <p class="texto">La glucosa es un hidrato de carbono, un azúcar. La planta la usa de dos maneras: como <b>material</b> para construir su cuerpo (la madera y las paredes de sus células se arman a partir de ella) y como <b>fuente de energía</b>, que obtiene con la respiración celular, de día y de noche, en todas sus células vivas.</p>
+      <div class="ecufija">
+      <div class="ecufija__col"><span class="ecufija__tag">REACTIVOS</span><span class="ecufija__txt">dióxido de carbono + agua</span></div>
+      <div class="ecufija__fle"><i>luz</i><b>⟶</b><small>en los cloroplastos</small></div>
+      <div class="ecufija__col"><span class="ecufija__tag">PRODUCTOS</span><span class="ecufija__txt">glucosa + oxígeno</span></div>
+      </div>
+      <p class="aviso">La luz no es un reactivo: es la energía que hace posible la transformación.</p>
+      <p class="texto"><i>Foto</i> significa luz; <i>síntesis</i>, armar. La <mark>fotosíntesis</mark> es el proceso con el que las plantas fabrican su propia materia orgánica: con <span class="t-agua">agua</span> y <span class="t-gas">dióxido de carbono</span>, y usando la energía de la <span class="t-sol">luz</span>, fabrican <span class="t-cloro">glucosa</span> y liberan <span class="t-gas">oxígeno</span> al aire. Ocurre en los <b>cloroplastos</b>, unas estructuras verdes de sus células.</p>
+      <p class="texto">La glucosa es un hidrato de carbono, un azúcar. La planta la usa como <b>material</b> para construir su cuerpo (la madera y las paredes de sus células se arman a partir de ella) y como <b>fuente de energía</b>.</p>
+      <p class="texto">La fotosíntesis es parte del <b>metabolismo</b> del cardón: el conjunto de transformaciones de materia y energía que ocurren dentro de un ser vivo. En la fotosíntesis, <b>materia inorgánica</b> (dióxido de carbono y agua) se transforma en <b>materia orgánica</b> (glucosa), usando la energía de la luz.</p>
+      <p class="texto">Por eso el cardón es <mark>autótrofo</mark>: fabrica su propia materia orgánica a partir de materia inorgánica. Los animales, como la vicuña o nosotros, somos <b>heterótrofos</b>: obtenemos la materia orgánica comiendo a otros seres vivos.</p>
       <p class="texto">La planta es un <b>sistema abierto</b>: toma materia y energía del ambiente, las transforma y devuelve materia al ambiente.</p>
       <div class="consigna"><b>RESPONDAN</b><span>Con lo que acaban de descubrir: la madera del cardón está hecha, sobre todo, con…</span></div>
       <div class="opc" id="chkMadera">
@@ -508,6 +533,39 @@ table.datos td.num{font-family:var(--f-dato);text-align:right}
         <button data-v="luz">luz del sol que quedó guardada en el tallo</button>
       </div>
       <div class="fb" id="fbMadera"></div>
+    </div>
+
+    <div class="bloque" id="parte5" hidden>
+      <span class="eyebrow">¿Quiénes hacen fotosíntesis?</span>
+      <p class="texto">No solo las plantas. Hacen fotosíntesis los seres vivos que tienen clorofila: las <b>plantas</b> (como el cardón y el molle), las <b>algas</b> (desde las microscópicas hasta las grandes algas marinas) y las <b>cianobacterias</b>, organismos de célula procariota que viven en el agua y en suelos húmedos. Plantas y algas la hacen en cloroplastos; las cianobacterias no tienen cloroplastos: tienen la clorofila en membranas dentro de su célula.</p>
+      <div class="consigna"><b>CLASIFIQUEN</b><span>¿Cuáles de estos seres vivos hacen fotosíntesis?</span></div>
+      <div class="cartas" id="cartasOrg"></div>
+      <div class="fb" id="fbOrg"></div>
+    </div>
+
+    <div class="bloque" id="parte6" hidden>
+      <span class="eyebrow">Fotosíntesis y respiración</span>
+      <div class="dos">
+        <div class="colFR">
+          <h4>Fotosíntesis</h4>
+          <ul>
+            <li><b>Cuándo:</b> solo cuando hay luz.</li>
+            <li><b>Dónde:</b> en las células con cloroplastos (la capa verde del tallo del cardón, los folíolos del molle).</li>
+            <li><b>Usa:</b> dióxido de carbono y agua.</li>
+            <li><b>Produce:</b> glucosa y oxígeno.</li>
+          </ul>
+        </div>
+        <div class="colFR">
+          <h4>Respiración celular</h4>
+          <ul>
+            <li><b>Cuándo:</b> de día y de noche, sin parar.</li>
+            <li><b>Dónde:</b> en todas las células vivas de la planta, también en las de la raíz, dentro de las mitocondrias.</li>
+            <li><b>Usa:</b> glucosa y oxígeno.</li>
+            <li><b>Produce:</b> dióxido de carbono, agua y la energía que la célula necesita para vivir.</li>
+          </ul>
+        </div>
+      </div>
+      <p class="texto">Lo que una fabrica, la otra lo usa. De noche el cardón no hace fotosíntesis, pero sigue vivo porque respira. La respiración celular la van a estudiar más adelante.</p>
     </div>
     <div class="pie"><span class="pend"></span><button class="btn btn--pri sig">Buscar la fábrica en el cardón →</button></div>
   </section>
@@ -563,6 +621,16 @@ table.datos td.num{font-family:var(--f-dato);text-align:right}
       <div class="concepto bloque" id="cmpCierre" hidden>
         <span class="eyebrow">Mismo proceso, distinta estructura</span>
         <p class="texto">El cardón y el molle hacen fotosíntesis con lo mismo: agua, dióxido de carbono y luz. Los dos fabrican glucosa y liberan oxígeno en células con cloroplastos. Lo que cambia es <b>dónde</b> están esas células: en el tallo del cardón y en las hojas del molle. Son dos formas distintas de vivir en el mismo ambiente seco.</p>
+        <div class="tabla-wrap"><table class="datos">
+          <thead><tr><th></th><th>Cardón</th><th>Molle</th></tr></thead>
+          <tbody>
+            <tr><td><b>Dónde está la fábrica</b></td><td>En la capa verde del tallo, justo debajo de la piel</td><td>En los folíolos de sus hojas, sobre todo en las células en empalizada</td></tr>
+            <tr><td><b>Sus hojas</b></td><td>Transformadas en espinas: no hacen fotosíntesis</td><td>Hojas compuestas, con muchos folíolos verdes</td></tr>
+            <tr><td><b>Dónde están los estomas</b></td><td>En la piel del tallo</td><td>En la piel (epidermis) de los folíolos</td></tr>
+            <tr><td><b>Forma del cuerpo</b></td><td>Tallo grueso y carnoso, con costillas que guardan agua</td><td>Árbol de tronco leñoso con una copa de hojas</td></tr>
+            <tr><td><b>Lo que comparten</b></td><td colspan="2">Los dos usan dióxido de carbono y agua, necesitan luz, hacen fotosíntesis en cloroplastos y producen glucosa y oxígeno.</td></tr>
+          </tbody>
+        </table></div>
       </div>
     </div>
     <div class="pie"><span class="pend"></span><button class="btn btn--pri sig">Ir al laboratorio →</button></div>
@@ -643,8 +711,27 @@ table.datos td.num{font-family:var(--f-dato);text-align:right}
         <button data-v="aire">De un gas del aire</button>
         <button data-v="luz">De la luz del sol</button>
       </div>
-      <div class="campo"><label for="veredicto">Expliquen con sus palabras cómo el cardón, sin hojas verdes, fabrica su alimento y de dónde sale su madera.</label><textarea id="veredicto"></textarea></div>
+      <div class="campo"><label for="veredicto">Expliquen con sus palabras cómo el cardón, sin hojas verdes, fabrica materia orgánica a partir de materia inorgánica y de dónde sale su madera.</label><textarea id="veredicto"></textarea></div>
       <div class="fb" id="fbAp2"></div>
+    </div>
+
+    <div class="bloque">
+      <span class="eyebrow">Ideas clave</span>
+      <div class="ecufija">
+        <div class="ecufija__col"><span class="ecufija__tag">REACTIVOS</span><span class="ecufija__txt">dióxido de carbono + agua</span></div>
+        <div class="ecufija__fle"><i>luz</i><b>⟶</b><small>en los cloroplastos</small></div>
+        <div class="ecufija__col"><span class="ecufija__tag">PRODUCTOS</span><span class="ecufija__txt">glucosa + oxígeno</span></div>
+      </div>
+      <p class="aviso">La luz no es un reactivo: es la energía que hace posible la transformación.</p>
+      <ul class="texto">
+        <li>Un jardín botánico conserva, investiga y enseña sobre plantas vivas identificadas.</li>
+        <li>Hacen fotosíntesis las plantas, las algas y las cianobacterias.</li>
+        <li>Reactivos: dióxido de carbono y agua. Productos: glucosa y oxígeno. La luz aporta la energía.</li>
+        <li>Ocurre en los cloroplastos: en el cardón, en la capa verde del tallo; en el molle, en los folíolos.</li>
+        <li>Solo ocurre con luz. La respiración celular ocurre siempre, de día y de noche.</li>
+        <li>La fotosíntesis es parte del metabolismo: transforma materia inorgánica en materia orgánica.</li>
+        <li>El cardón es autótrofo: fabrica su propia materia orgánica.</li>
+      </ul>
     </div>
 
     <div class="bloque">
@@ -710,10 +797,10 @@ const R={}; ST.forEach(s=>R[s.id]={});
 
 /* requisitos de cada estación: devuelven lo que falta */
 const REQ={
- entrada:()=>{const f=[];if(!$('#n1').value.trim())f.push('escribir al menos un nombre');if(!$('#curso').value)f.push('elegir el curso');if(!S.apuesta)f.push('elegir su apuesta');return f},
+ entrada:()=>{const f=[];if(!S.cant)f.push('elegir si trabaja un estudiante o dos');if(!$('#n1').value.trim())f.push('escribir nombre y apellido');if(S.cant==='2'&&!$('#n2').value.trim())f.push('escribir el nombre y apellido del segundo estudiante');if(!S.seccion)f.push('elegir la sección');if(!S.apuesta)f.push('elegir su apuesta');return f},
  jardin:()=>{const f=[];if(!R.jardin.cartas)f.push('clasificar las seis tarjetas');if(!R.jardin.mapa)f.push('tocar los seis puntos del mapa');return f},
  ambiente:()=>{const f=[];if(!R.ambiente.noche||!R.ambiente.dia)f.push('llevar la hora a la noche y al mediodía');if(!R.ambiente.cond)f.push('marcar las tres frases correctas');return f},
- fabrica:()=>{const f=[];if(!R.fabrica.zoom)f.push('recorrer el acercamiento hasta el cloroplasto');if(!R.fabrica.receta)f.push('encender la fábrica con la receta');if(!R.fabrica.pred)f.push('completar los dos casos guiados');if(!R.fabrica.ecu)f.push('armar la receta en palabras');if(!R.fabrica.madera)f.push('responder la pregunta de la madera');return f},
+ fabrica:()=>{const f=[];if(!R.fabrica.zoom)f.push('recorrer el acercamiento hasta el cloroplasto');if(!R.fabrica.receta)f.push('encender la fábrica con la receta');if(!R.fabrica.pred)f.push('completar los dos casos guiados');if(!R.fabrica.ecu)f.push('armar la receta en palabras');if(!R.fabrica.madera)f.push('responder la pregunta de la madera');if(!R.fabrica.org)f.push('clasificar quiénes hacen fotosíntesis');return f},
  cardon:()=>{const f=[];if(!R.cardon.puntos)f.push('tocar los cinco puntos');if(!R.cardon.capa)f.push('encontrar la capa de la fábrica');if(!R.cardon.celula)f.push('rotular la célula');return f},
  molle:()=>{const f=[];if(!R.molle.puntos)f.push('tocar los tres puntos de la hoja');if(!R.molle.capa)f.push('encontrar las células con más cloroplastos');if(!R.molle.cmp)f.push('completar la comparación');return f},
  lab:()=>{const f=[];if(!R.lab.p)f.push('elegir la pregunta');if(!R.lab.h)f.push('escribir la hipótesis');if(!R.lab.v)f.push('clasificar las variables');if(!R.lab.run)f.push('correr el experimento');if(!R.lab.c)f.push('elegir la conclusión y explicar el vaso tapado');return f},
@@ -724,7 +811,6 @@ const REQ={
 const riel=$('#riel');
 ST.forEach((s,i)=>{const b=h('button',{class:'paso','data-i':i},`<span class="n">${i}</span><span>${s.t}</span><span class="m">${s.min}′</span>`);b.addEventListener('click',()=>ir(i));riel.appendChild(b)});
 riel.appendChild(h('div',{class:'riel__pie'},'Cada estación se completa con sus actividades. El avance queda guardado en esta computadora.'));
-$('#planDoc').innerHTML=ST.map((s,i)=>`<div><b>${String(i).padStart(2,'0')} · ${s.min} min</b>${s.doc}</div>`).join('');
 const secs=$$('.est');
 function pintarRiel(){
   $$('.paso').forEach((b,i)=>{b.classList.toggle('on',i===S.cur);b.classList.toggle('ok',!!S.done[ST[i].id]);b.disabled=!(S.doc||i<=S.unl)});
@@ -750,7 +836,7 @@ secs.forEach((sec,i)=>{
   });
 });
 function marcarListo(id){const sec=secs[ST.findIndex(s=>s.id===id)];const p=$('.pend',sec);if(!REQ[id]().length){p.textContent='Estación completa.';p.className='pend';p.style.color='var(--cloro)'}}
-$('#modoDoc').addEventListener('click',()=>{S.doc=true;save();pintarRiel();_libreAll();$('#modoDoc').textContent='Todas las estaciones están desbloqueadas'});
+/* modoDoc eliminado: la revisión completa se hace con ?libre */
 /* MODO LIBRE (?libre en la URL): revisión docente — todas las estaciones y actividades abiertas, sin requisitos */
 const LIBRE=/[?&]libre/.test(location.search);
 const _libreAll=()=>{document.querySelectorAll('button[disabled]').forEach(b=>{if(!b.dataset.keepdisabled)b.disabled=false});document.querySelectorAll('[hidden]').forEach(e=>{if(!(e.classList&&e.classList.contains('est')))e.hidden=false});document.querySelectorAll('.solapas button').forEach(b=>{b.disabled=false;b.title=''})};
@@ -789,7 +875,7 @@ $('#volverInicio').addEventListener('click',()=>ir(0));
 setInterval(()=>{if(!S.t0)return;const m=Math.floor((Date.now()-S.t0)/60000);$('#reloj b').textContent=m;$('#reloj b').style.color=m>80?'var(--error)':'var(--sol)'},5000);
 
 /* =================== 0 · entrada =================== */
-['n1','n2','curso','apuestaPq','hipo','veredicto'].forEach(id=>{const n=$('#'+id);if(S.txt[id])n.value=S.txt[id];n.addEventListener('input',()=>{S.txt[id]=n.value;save()})});
+['n1','n2','apuestaPq','hipo','veredicto'].forEach(id=>{const n=$('#'+id);if(S.txt[id])n.value=S.txt[id];n.addEventListener('input',()=>{S.txt[id]=n.value;save()})});
 const AP={suelo:'de la tierra y sus minerales',agua:'del agua de lluvia',aire:'de un gas del aire',luz:'de la luz del sol'};
 function opciones(cont,onPick,{lock=false}={}){
   $$('button',cont).forEach(b=>b.addEventListener('click',()=>{
@@ -799,6 +885,10 @@ function opciones(cont,onPick,{lock=false}={}){
 }
 opciones($('#apuesta'),v=>{S.apuesta=v;save()});
 if(S.apuesta){const b=$(`#apuesta [data-v="${S.apuesta}"]`);if(b)b.classList.add('sel')}
+opciones($('#cantEst'),v=>{S.cant=v;$('#campoN2').style.display=v==='2'?'':'none';save()});
+if(S.cant){const b=$(`#cantEst [data-v="${S.cant}"]`);if(b)b.classList.add('sel');$('#campoN2').style.display=S.cant==='2'?'':'none'}
+opciones($('#seccion'),v=>{S.seccion=v;save()});
+if(S.seccion){const b=$(`#seccion [data-v="${S.seccion}"]`);if(b)b.classList.add('sel')}
 
 /* =================== 1 · jardín =================== */
 const CARTAS=[
@@ -1066,8 +1156,8 @@ const ING=[
  {id:'agua',t:'Agua',c:'#4fcaf5',ok:1,m:'Entra. El agua sube desde las raíces por unos conductos del tallo hasta las células verdes.'},
  {id:'gas',t:'Dióxido de carbono',c:'#c7b8ff',ok:1,m:'Entra. Es un gas del aire que pasa por los estomas, unos poros diminutos de la piel de la planta.'},
  {id:'luz',t:'Luz del sol',c:'#ffb547',ok:1,m:'Entra, pero no es materia: es la energía que hace funcionar la fábrica. La capta la clorofila, el pigmento verde.'},
- {id:'tierra',t:'Tierra',c:'#a0805a',ok:0,m:'No entra. La tierra sostiene a la planta y guarda el agua y los minerales, pero no se convierte en alimento.'},
- {id:'abono',t:'Abono',c:'#7a6a4a',ok:0,m:'No entra. El abono aporta minerales que la planta necesita en poca cantidad para estar sana, pero no es su alimento.'},
+ {id:'tierra',t:'Tierra',c:'#a0805a',ok:0,m:'No entra. La tierra sostiene a la planta y guarda el agua y los minerales, pero no se convierte en materia orgánica.'},
+ {id:'abono',t:'Abono',c:'#7a6a4a',ok:0,m:'No entra. El abono aporta minerales que la planta necesita en poca cantidad para estar sana, pero no le aporta la materia orgánica.'},
  {id:'oxi',t:'Oxígeno',c:'#ff8fa3',ok:0,m:'No entra en esta fábrica. Esperen a encenderla y vean de qué lado aparece.'}
 ];
 const FAB={dentro:new Set(),on:false};
@@ -1153,7 +1243,7 @@ function actualizarCtl(){
   FAB.on=tasa>0;$('#fGlow').setAttribute('opacity',tasa);$('#fSol').setAttribute('opacity',.25+.75*luz);$('#fRayos').setAttribute('opacity',luz);
   if(!P2.t1&&P2.p1&&a&&g&&!l){P2.t1=true;pn('c1p2','ok');pn('c1p3','ok');$('#tLuz').classList.remove('atencion');casoHecho(1);
     const ok=P2.p1==='para';$('#res1').hidden=false;$('#res1').className='resC'+(ok?'':' mal');
-    $('#res1').innerHTML='El medidor quedó en <b>0</b>: sin luz no hay energía y la fábrica se detiene por completo.'+(ok?' <b>Su predicción coincidió.</b>':' <b>No coincidió con su predicción</b>: no baja un poco, se detiene del todo.');
+    $('#res1').innerHTML='El medidor quedó en <b>0</b>: sin luz no hay energía y la fábrica se detiene por completo.'+(ok?' <b>Su predicción coincidió.</b>':' <b>No coincidió con su predicción</b>: no baja un poco, se detiene del todo.')+' Aunque la fábrica se detenga, la planta sigue viva: usa la glucosa que fabricó con luz mediante la respiración celular.';
     fb('fb1','','neu');marcarListo('fabrica')}
   if(!P2.t2&&P2.p2&&a&&g&&l&&I>0&&I<=60){P2.t2=true;pn('c2p2','ok');pn('c2p3','ok');$('#campoLuz').classList.remove('atencion');casoHecho(2);
     const ok=P2.p2==='menos';$('#res2').hidden=false;$('#res2').className='resC'+(ok?'':' mal');
@@ -1172,10 +1262,10 @@ function actualizarCtl(){
 /* acercamiento 3D: hoja → estoma → célula → cloroplastos */
 let VZ=null;
 const LVZ=[
- {tgt:{x:0,y:0,z:0},r:10,th:.85,ph:1.02,x:'<b>1 · La hoja.</b> Toda hoja verde es una fábrica de alimento al aire libre. En su cara de abajo tiene miles de poros diminutos: los <b>estomas</b>. Bajemos por uno de ellos.'},
- {tgt:{x:16,y:.1,z:0},r:4.8,th:.75,ph:.82,x:'<b>2 · Los estomas.</b> Dos células con forma de poroto abrazan un poro que se abre y se cierra. Por ahí <b>entra el dióxido de carbono</b> del aire y <b>sale el oxígeno</b> que se fabrica adentro.'},
+ {tgt:{x:0,y:0,z:0},r:10,th:.85,ph:1.02,x:'<b>1 · Una hoja.</b> Las hojas verdes, como los folíolos del molle, son fábricas de alimento. En su piel (la epidermis) tienen miles de poros diminutos: los <b>estomas</b>. El cardón también tiene estomas, pero en la piel de su tallo. Bajemos por uno.'},
+ {tgt:{x:16,y:.1,z:0},r:4.8,th:.75,ph:.82,x:'<b>2 · Los estomas.</b> Dos células con forma de poroto abrazan un poro que se abre y se cierra. Por ahí <b>entra el dióxido de carbono</b> del aire y <b>sale el oxígeno</b> que se fabrica adentro. También sale <b>vapor de agua</b>: por eso las plantas de lugares secos necesitan cuidar cuándo los abren.'},
  {tgt:{x:32,y:0,z:0},r:5.4,th:.65,ph:1,x:'<b>3 · La célula vegetal.</b> Adentro de la hoja, cada célula es una caja con pared rígida: tiene un núcleo, una vacuola enorme con agua y… <b>muchas organelas verdes</b> flotando. Fíjense que no hay una sola. <span style="opacity:.55;font-size:.85em">Modelo 3D: Cell Architecture Studio (GitHub).</span>'},
- {tgt:{x:48,y:0,z:0},r:3.3,th:.7,ph:.85,x:'<b>4 · Los cloroplastos.</b> Estas organelas verdes son la fábrica: una sola célula tiene decenas y una hoja, millones. Adentro, las pilas de membranas llenas de clorofila captan la luz y transforman agua y dióxido de carbono en <b>glucosa</b> y <b>oxígeno</b>: eso es la fotosíntesis.'}
+ {tgt:{x:48,y:0,z:0},r:3.3,th:.7,ph:.85,x:'<b>4 · Los cloroplastos.</b> Estas organelas verdes son la fábrica: una sola célula tiene decenas y una hoja, millones. En sus pilas de membranas, la <b>clorofila</b> capta la luz; en el líquido que las rodea se arma la <b>glucosa</b> a partir de agua y dióxido de carbono, y se libera <b>oxígeno</b>. Eso es la fotosíntesis.'}
 ];
 function crearZoom(){
   const V=VZ=new Visor($('#v3zoom'),{target:{x:0,y:0,z:0},r:10,theta:.85,phi:1.02,minR:1.4,maxR:18,minPhi:.25,maxPhi:1.55,autoRotate:true,fov:42});
@@ -1284,16 +1374,37 @@ function crearZoom(){
     const okk=sol[k].includes(t)&&!Object.values(lleno).includes(t);
     if(okk){hu.textContent=t;hu.classList.add('lleno');lleno[hu.dataset.h]=t;sel.classList.add('usada');sel.classList.remove('sel');sel=null;fb('fbEcu','','');
       if(Object.keys(lleno).length===5){R.fabrica.ecu=1;fb('fbEcu','Receta completa: dióxido de carbono + agua, con la energía de la luz, se transforman en glucosa + oxígeno.','bien');$('#parte4').hidden=false;marcarListo('fabrica')}}
-    else{shake(hu);const msg=t==='tierra'?'La tierra no participa de la receta.':k==='e'?'Sobre la flecha va la energía, no la materia.':k==='r'?'Ese no entra: se fabrica.':'Ese no se fabrica: entra en la fábrica.';fb('fbEcu',msg,'mal')}
+    else{shake(hu);const msg=t==='tierra'?'La tierra no participa de la receta.':k==='e'?'Sobre la flecha va la energía, no la materia.':k==='r'?'Ese no es un reactivo: es un producto.':'Ese no es un producto: es un reactivo.';fb('fbEcu',msg,'mal')}
   }));
 })();
-opciones($('#chkMadera'),(v,b)=>{if(v==='glu'){b.classList.add('bien');R.fabrica.madera=1;fb('fbMadera','Exacto. La madera se arma con la glucosa, y la glucosa se fabrica sobre todo con el dióxido de carbono del aire, más el agua.','bien');marcarListo('fabrica')}
+opciones($('#chkMadera'),(v,b)=>{if(v==='glu'){b.classList.add('bien');R.fabrica.madera=1;$('#parte5').hidden=false;fb('fbMadera','Exacto. La madera se arma con la glucosa, y la glucosa se fabrica sobre todo con el dióxido de carbono del aire, más el agua.','bien');marcarListo('fabrica')}
   else{b.classList.add('mal');fb('fbMadera',v==='min'?'Los minerales se necesitan en poca cantidad. Revisen la receta: ¿qué ingredientes entran en la fábrica?':'La luz es energía, no materia: no puede convertirse en madera.','mal')}});
+
+/* clasifiquen: quiénes hacen fotosíntesis */
+const ORGS=[
+ {t:'Cardón',si:1},
+ {t:'Molle',si:1},
+ {t:'Algas verdes de una laguna de la Puna',si:1},
+ {t:'Cianobacterias',si:1},
+ {t:'Vicuña',si:0,f:'Se alimenta de pastos: es heterótrofa.'},
+ {t:'Larva de la polilla del cactus',si:0,f:'Se alimenta del interior del cardón: es heterótrofa.'},
+ {t:'Hongo que crece en un tronco seco',si:0,f:'Toma materia orgánica de la madera: es heterótrofo.'}
+];
+const cog=$('#cartasOrg');let okOrg=0;
+ORGS.forEach(c=>{
+  const d=h('div',{class:'carta'},`<span>${c.t}</span><div class="fila"><button class="btn" data-v="1">Hace fotosíntesis</button><button class="btn" data-v="0">No hace fotosíntesis</button></div>`);
+  $$('button',d).forEach(b=>b.addEventListener('click',()=>{
+    if(d.classList.contains('bien'))return;
+    if(+b.dataset.v===c.si){d.classList.remove('mal');d.classList.add('bien');d.querySelector('.fila').innerHTML=`<small>✓ ${c.si?'Hace fotosíntesis':'No hace fotosíntesis'}${c.f?' · '+c.f:''}</small>`;okOrg++;
+      if(okOrg===ORGS.length){R.fabrica.org=1;$('#parte6').hidden=false;fb('fbOrg','Las siete están bien clasificadas.','bien');marcarListo('fabrica')}
+      else fb('fbOrg',c.si?'Bien: tiene clorofila para captar la luz.':c.f,'bien')}
+    else{shake(d);fb('fbOrg',c.si?'Piensen de nuevo: ¿tiene clorofila para captar la luz?':'Piensen de nuevo: ¿fabrica su materia orgánica o la obtiene comiendo?','mal')}
+  }));cog.appendChild(d)});
 
 /* =================== 4 · cardón 3D =================== */
 let VC=null;
 const PUNTOS_C=[
- {t:'Espinas',d:'Son hojas transformadas. No son verdes y no fabrican alimento. Protegen al cardón de los animales y le dan un poco de sombra a la piel del tallo.',p:[.5,4.9,.1]},
+ {t:'Espinas',d:'Son hojas transformadas. No son verdes y no fabrican materia orgánica. Protegen al cardón de los animales y le dan un poco de sombra a la piel del tallo.',p:[.5,4.9,.1]},
  {t:'Costillas',d:'Los pliegues del tallo se abren como un acordeón cuando el cardón guarda agua después de las lluvias de verano, y se cierran a medida que la gasta.',p:[-.25,2.0,.38]},
  {t:'Piel verde',d:'Está cubierta por una capa de cera que evita que se escape el agua. En la piel hay <b>estomas</b>, poros diminutos por donde entra el dióxido de carbono y sale el oxígeno.',p:[.05,3.1,-.47]},
  {t:'Punta',d:'Acá el cardón crece, muy despacio. Es la parte que ataca la larva de la polilla del cactus, una plaga que estudia el Jardín y que puede matar a la planta.',p:[0,7.45,0]},
@@ -1360,7 +1471,7 @@ function crearCardon(){
   $$('.parte',svg).forEach(p=>{p.style.cursor='pointer';p.addEventListener('click',ev=>{ev.stopPropagation();if(!sel)return;
     if(p.dataset.p===sel.id){hechos.add(sel.id);const b=$$('button',cont).find(x=>x.textContent===sel.t);b.classList.remove('sel');b.classList.add('usada');$('#fichaCelula').innerHTML=`<b>✓ ${sel.t}</b><br>${sel.d}`;
       $$(`[data-p="${sel.id}"]`,svg).forEach(n=>n.setAttribute('filter','drop-shadow(0 0 6px #5ef28f)'));sel=null;
-      if(hechos.size===4){R.cardon.celula=1;fb('fbCel','Célula rotulada. Las plantas, las algas y muchos otros seres vivos que fabrican su alimento son autótrofos.','bien');marcarListo('cardon')}}
+      if(hechos.size===4){R.cardon.celula=1;fb('fbCel','Célula rotulada. Los cloroplastos de esta célula son los que convierten al cardón en autótrofo: con ellos fabrica materia orgánica a partir de materia inorgánica.','bien');marcarListo('cardon')}}
     else fb('fbCel','Esa parte no es '+sel.t.toLowerCase()+'. Prueben con otra.','mal')})});
 })();
 
@@ -1428,7 +1539,7 @@ function crearMolle(){
 }
 /* comparación */
 (function(){
-  const F=[{t:'Fabrica su alimento por fotosíntesis.',r:'dos'},{t:'Su fábrica está en el tallo.',r:'cardon'},{t:'Su fábrica está en las hojas.',r:'molle'},{t:'Necesita dióxido de carbono, agua y luz.',r:'dos'},{t:'Sus hojas se transformaron en espinas.',r:'cardon'},{t:'Tiene células con cloroplastos.',r:'dos'},{t:'Guarda mucha agua dentro del tallo.',r:'cardon'}];
+  const F=[{t:'Fabrica su materia orgánica por fotosíntesis.',r:'dos'},{t:'Su fábrica está en el tallo.',r:'cardon'},{t:'Su fábrica está en las hojas.',r:'molle'},{t:'Necesita dióxido de carbono, agua y luz.',r:'dos'},{t:'Sus hojas se transformaron en espinas.',r:'cardon'},{t:'Tiene células con cloroplastos.',r:'dos'},{t:'Guarda mucha agua dentro del tallo.',r:'cardon'}];
   const box=$('#cmp');let ok=0;
   F.forEach(f=>{const row=h('div',{class:'cmp__f'},`<span>${f.t}</span><div class="seg"><button data-v="cardon">Cardón</button><button data-v="molle">Molle</button><button data-v="dos">Los dos</button></div>`);
     $$('button',row).forEach(b=>b.addEventListener('click',()=>{if(row.classList.contains('bien'))return;$$('button',row).forEach(x=>x.classList.remove('sel'));b.classList.add('sel');
@@ -1501,11 +1612,11 @@ const Q=[
  {e:'En un laboratorio pusieron 10 discos de hoja de espinaca en cada vaso, con agua y bicarbonato. Los discos suben cuando se llenan del gas que producen. Contaron cuántos flotaban a los 10 minutos. ¿Qué conclusión se apoya en estos datos?',g:'lab',o:['Con más luz, la fotosíntesis de los discos avanza más rápido','Los discos flotan porque la lámpara calienta el agua del vaso','Los discos tapados no flotan porque perdieron sus cloroplastos','A 40 cm de la lámpara los discos dejan de hacer fotosíntesis'],k:0},
  {e:'Una estudiante quiere ver cloroplastos de cardón con un microscopio. Puede sacar una muestra de cuatro partes distintas de la planta. ¿De qué parte le conviene sacarla?',o:['De una espina, porque las espinas son las hojas del cardón','De la raíz, porque por ahí entra el agua que usa','De la capa verde del tallo, porque ahí le llega luz','Del centro del tallo, porque ahí la planta guarda agua'],k:2},
  {e:'Tomás dice: “De día las plantas hacen fotosíntesis y de noche respiran”. ¿Cuál es el error en la idea de Tomás?',o:['Las plantas respiran de día y de noche, en todas sus células','Las plantas hacen fotosíntesis de día y de noche, sin detenerse','Las plantas no respiran: solo hacen fotosíntesis cuando hay luz','De noche las plantas usan luz guardada para seguir con la fotosíntesis'],k:0},
- {e:'Un plantín de molle está en un frasco transparente cerrado, al sol, con riego y a temperatura constante. Si se cubre el frasco con una tela negra durante un día, ¿qué pasa con la fabricación de glucosa?',o:['Sigue igual, porque la planta todavía tiene agua y dióxido de carbono','Se detiene, porque falta la energía que impulsa la transformación','Aumenta, porque en la oscuridad la planta fabrica alimento más rápido','Se detiene, porque sin luz la planta deja de absorber agua'],k:1},
- {e:'En el laboratorio, una planta acuática suelta burbujas desde sus hojas. La tabla muestra las burbujas que contaron en un día de sol. ¿Qué explica el valor de las 22 h?',g:'burb',o:['La planta se quedó sin agua para seguir fabricando alimento','La planta ya fabricó todo el alimento que necesitaba ese día','La planta guarda el gas de noche para poder respirar','Sin la luz del sol, la planta no hace fotosíntesis'],k:3},
+ {e:'Un plantín de molle está en un frasco transparente cerrado, al sol, con riego y a temperatura constante. Si se cubre el frasco con una tela negra durante un día, ¿qué pasa con la fabricación de glucosa?',o:['Sigue igual, porque la planta todavía tiene agua y dióxido de carbono','Se detiene, porque falta la energía que impulsa la transformación','Aumenta, porque en la oscuridad la planta fabrica materia orgánica más rápido','Se detiene, porque sin luz la planta deja de absorber agua'],k:1},
+ {e:'En el laboratorio, una planta acuática suelta burbujas desde sus hojas. La tabla muestra las burbujas que contaron en un día de sol. ¿Qué explica el valor de las 22 h?',g:'burb',o:['La planta se quedó sin agua para seguir fabricando materia orgánica','La planta ya fabricó toda la materia orgánica que necesitaba ese día','La planta guarda el gas de noche para poder respirar','Sin la luz del sol, la planta no hace fotosíntesis'],k:3},
  {e:'Un club de barrio tiene una plaza con muchas plantas lindas y quiere transformarla en un jardín botánico. ¿Qué tiene que agregar para lograrlo?',o:['Más especies con flores grandes y de colores muy llamativos','Un vivero para vender plantines a los vecinos del barrio','Un registro de cada planta, para estudiarla y conservarla mejor','Un sistema de riego automático para mantener verdes los canteros'],k:2},
  {e:'Lucía dice que el oxígeno que sale de las hojas del molle es el mismo aire que entró, sin ningún cambio. ¿Qué le respondería alguien que entendió la fotosíntesis?',o:['Tiene razón: la hoja solo deja pasar el aire sin cambiarlo','No: el oxígeno se forma cuando la planta fabrica su glucosa','No: el oxígeno viene de la tierra, por las raíces','Tiene razón: las hojas filtran el aire y lo devuelven más limpio'],k:1},
- {e:'Un guía del Jardín explica que el cardón y el molle fabrican su alimento con el mismo proceso. ¿En qué se diferencian?',o:['El cardón lo fabrica en el tallo y el molle, en las hojas','El cardón usa agua del suelo y el molle, dióxido de carbono','El cardón libera oxígeno y el molle libera dióxido de carbono','El cardón lo fabrica en las espinas y el molle, en el tronco'],k:0}
+ {e:'Un guía del Jardín explica que el cardón y el molle fabrican su materia orgánica con el mismo proceso. ¿En qué se diferencian?',o:['El cardón lo fabrica en el tallo y el molle, en las hojas','El cardón usa agua del suelo y el molle, dióxido de carbono','El cardón libera oxígeno y el molle libera dióxido de carbono','El cardón lo fabrica en las espinas y el molle, en el tronco'],k:0}
 ];
 function grafQ(tipo){
   if(tipo==='lab'){const d=[['Lámpara a 10 cm',9],['Lámpara a 20 cm',6],['Lámpara a 40 cm',2],['A 10 cm, tapado con aluminio',0]];
@@ -1530,12 +1641,13 @@ function mostrarNota(){$('#resultado').hidden=false;$('#nota').textContent=`${S.
 function armarFicha(){
   const t=S.txt;const L=[];
   L.push('LA FÁBRICA SECRETA DEL CARDÓN · Ficha de la visita');
-  L.push('Integrantes: '+[t.n1,t.n2].filter(Boolean).join(' y ')+' · Curso: '+(t.curso||'—'));
+  L.push('Integrantes: '+[t.n1,t.n2].filter(Boolean).join(' y ')+' · Sección: '+(S.seccion||'—'));
   L.push('Fecha: '+new Date().toLocaleDateString('es-AR'));
   L.push('');L.push('Apuesta inicial: la madera sale '+(AP[S.apuesta]||'—')+'. Por qué: '+(t.apuestaPq||'—'));
   L.push('Apuesta final: '+(AP[S.apuesta2]||'—'));
   L.push('Explicación final: '+(t.veredicto||'—'));
   L.push('Hipótesis del laboratorio: '+(t.hipo||'—'));
+  L.push('Ecuación: dióxido de carbono + agua —(luz)→ glucosa + oxígeno');
   L.push('');L.push('Cuestionario: '+S.nota+' de 10');
   L.push('Respuestas: '+Q.map((q,i)=>`${i+1}${'abcd'[S.quiz[i]]}${S.quiz[i]===q.k?'✓':'✗'}`).join('  '));
   $('#fichaTxt').textContent=L.join('\n');$('#fichaB').hidden=false;
@@ -1563,7 +1675,7 @@ $('#hora').dispatchEvent(new Event('input'));
 /* arranque */
 if(S.unl>=ST.length)S.unl=ST.length-1;
 ir(Math.min(S.cur||0,S.doc?ST.length-1:S.unl));
-if(S.doc)$('#modoDoc').textContent='Todas las estaciones están desbloqueadas';
+
 </script>
 <script>
 /* three.js addons: GLTFLoader + DRACOLoader (r128) */
