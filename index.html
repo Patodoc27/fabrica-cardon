@@ -475,6 +475,7 @@ table.datos td.num{font-family:var(--f-dato);text-align:right}
         <button data-lv="3" disabled>4 · Los cloroplastos</button>
       </div>
       <div class="v3" id="v3zoom"><div class="v3__ayuda">Bajen con los botones · arrastren para mirar alrededor</div></div>
+      <div class="fila" id="rotCloroFila" hidden style="margin:8px 0 0"><button class="btn btn--sol" id="btnRotCloro" type="button">Rotular el cloroplasto</button><span class="aviso" id="avisoRotCloro"></span></div>
       <div class="ficha3d" id="fichaZoom" aria-live="polite"><b>Empecemos por una hoja.</b></div>
       <div class="fb" id="fbZoom"></div>
     </div>
@@ -1038,8 +1039,8 @@ class Visor{
     c.addEventListener('pointermove',e=>{
       if(!this.ptr.has(e.pointerId)){this.hover(e);return}
       const p=this.ptr.get(e.pointerId),dx=e.clientX-p.x,dy=e.clientY-p.y;p.x=e.clientX;p.y=e.clientY;if(this.down)this.down.m+=Math.abs(dx)+Math.abs(dy);
-      if(this.ptr.size===2){const [a,b]=[...this.ptr.values()];const d=Math.hypot(a.x-b.x,a.y-b.y);if(this.pinch)this.r=clamp(this.r*this.pinch/d,this.minR,this.maxR);this.pinch=d}
-      else{this.theta-=dx*.008;this.phi=clamp(this.phi-dy*.006,this.minPhi,this.maxPhi)}
+      if(this.ptr.size===2){if(this.lock)return;const [a,b]=[...this.ptr.values()];const d=Math.hypot(a.x-b.x,a.y-b.y);if(this.pinch)this.r=clamp(this.r*this.pinch/d,this.minR,this.maxR);this.pinch=d}
+      else if(!this.lock){this.theta-=dx*.008;this.phi=clamp(this.phi-dy*.006,this.minPhi,this.maxPhi)}
       this.goal=null;this.last=performance.now();this.kick();
     });
     const end=e=>{if(!this.ptr.has(e.pointerId))return;this.ptr.delete(e.pointerId);if(this.ptr.size<2)this.pinch=null;if(!this.ptr.size){this.drag=false;if(this.down&&this.down.m<7)this.click(e);this.down=null}};
@@ -1077,6 +1078,18 @@ function etiqueta(n,color='#5ef28f'){
   g.strokeStyle='#0b1020';g.lineWidth=5;g.stroke();g.fillStyle='#0b1020';g.font='bold 50px sans-serif';g.textAlign='center';g.textBaseline='middle';g.fillText(String(n),64,67);
   const tx=new THREE.CanvasTexture(cv);
   const s=new THREE.Sprite(new THREE.SpriteMaterial({map:tx,depthTest:false,transparent:true}));s.renderOrder=20;return s;
+}
+function rotulo3D(txt,color='#5ef28f'){
+  const cv=document.createElement('canvas');const g0=cv.getContext('2d');
+  g0.font='bold 32px system-ui,sans-serif';const w=Math.ceil(g0.measureText(txt).width)+40;
+  cv.width=w;cv.height=58;const g=cv.getContext('2d');g.font='bold 32px system-ui,sans-serif';
+  const rr=(x,y,ww,hh,r)=>{g.beginPath();g.moveTo(x+r,y);g.arcTo(x+ww,y,x+ww,y+hh,r);g.arcTo(x+ww,y+hh,x,y+hh,r);g.arcTo(x,y+hh,x,y,r);g.arcTo(x,y,x+ww,y,r);g.closePath()};
+  g.fillStyle='rgba(9,14,28,.93)';rr(1.5,1.5,w-3,55,15);g.fill();
+  g.strokeStyle=color;g.lineWidth=3;rr(1.5,1.5,w-3,55,15);g.stroke();
+  g.fillStyle=color;g.textAlign='center';g.textBaseline='middle';g.fillText(txt,w/2,30);
+  const tx2=new THREE.CanvasTexture(cv);tx2.anisotropy=4;
+  const s=new THREE.Sprite(new THREE.SpriteMaterial({map:tx2,depthTest:false,transparent:true}));
+  s.scale.set(w/58*.44,.44,1);s.renderOrder=30;return s;
 }
 const ribF=(a,ribs,d)=>1-d*.5*(1-Math.cos(ribs*a));
 
@@ -1406,6 +1419,21 @@ function crearZoom(){
   for(let i=0;i<22;i++){const rb=new THREE.Mesh(new THREE.SphereGeometry(.035,6,5),mat(0x1f4a28));rb.position.set(-1.6+rndC()*3.2,-.7+rndC()*1.4,-.6+rndC()*1.2);cl.add(rb)}
   [[-.9,-.15,.3],[.75,.4,-.15]].forEach(pp=>{const adn=new THREE.Mesh(new THREE.TorusGeometry(.15,.035,8,20),mat(0xc7b8ff));adn.position.set(pp[0],pp[1],pp[2]);adn.rotation.x=1.1;cl.add(adn)});
   const suelo4=new THREE.CircleGeometry(4.4,32),mat4=mat(0x141b30);const s4=new THREE.Mesh(suelo4,mat4);s4.rotation.x=-Math.PI/2;s4.position.y=-2.4;cl.add(s4);
+  // rótulos del cloroplasto: nombre, color, punto anclado, posición de la etiqueta
+  const rotCloro=new THREE.Group();rotCloro.visible=false;cl.add(rotCloro);
+  [['Membrana externa','#7ee0a0',[-2.28,.9,.45],[-3.0,1.15,0]],
+   ['Membrana interna','#5fce8f',[-2.14,.38,.42],[-3.0,.2,0]],
+   ['Estroma','#c7b8ff',[-.45,-.95,.3],[-.7,-1.8,0]],
+   ['Tilacoides','#2fbf6b',[-1.5,.42,.05],[-1.6,1.65,0]],
+   ['Grana','#5ef28f',[1.15,.15,.32],[1.6,1.65,0]],
+   ['Ribosomas','#ffb547',[1.15,-.45,.15],[3.0,-.85,0]],
+   ['Material genético','#c7b8ff',[.75,.4,-.15],[3.0,.8,0]]
+  ].forEach(r=>{
+    const sp=rotulo3D(r[0],r[1]);sp.position.set(r[3][0],r[3][1],r[3][2]);rotCloro.add(sp);
+    const pt=new THREE.Mesh(new THREE.SphereGeometry(.05,8,6),new THREE.MeshBasicMaterial({color:0xffffff,depthTest:false}));pt.position.set(r[2][0],r[2][1],r[2][2]);pt.renderOrder=29;rotCloro.add(pt);
+    const lg=new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(r[2][0],r[2][1],r[2][2]),new THREE.Vector3(r[3][0],r[3][1],r[3][2])]);
+    const ln=new THREE.Line(lg,new THREE.LineBasicMaterial({color:r[1],transparent:true,opacity:.75,depthTest:false}));ln.renderOrder=28;rotCloro.add(ln);
+  });
   sc.add(cl);
   // cable-guía que une los niveles
   const guia=new THREE.Mesh(new THREE.BoxGeometry(52,.02,.02),new THREE.MeshBasicMaterial({color:0x2b375c}));guia.position.set(24,-3.1,0);sc.add(guia);
@@ -1414,10 +1442,22 @@ function crearZoom(){
   const ir2=lv=>{const L=LVZ[lv];V.fly(L.tgt,L.r,L.th,L.ph);$('#fichaZoom').innerHTML=L.x;
     $$('#zoomSteps button').forEach(b=>{b.classList.toggle('on',+b.dataset.lv===lv);if(+b.dataset.lv<=lv)b.classList.add('visto')});
     const nb=$('#zoomSteps button[data-lv="'+(lv+1)+'"]');if(nb)nb.disabled=false;
+    if(rotCloroOn&&lv!==3)pintarRotCloro(false);
+    $('#rotCloroFila').hidden=lv!==3;
     if(lv===3&&!R.fabrica.zoom){R.fabrica.zoom=1;fb('fbZoom','Llegaron al cloroplasto: la organela donde ocurre la fotosíntesis.','bien');marcarListo('fabrica')}
   };
   VZ._ir=ir2;
   $$('#zoomSteps button').forEach(b=>b.addEventListener('click',()=>{if(!b.disabled)ir2(+b.dataset.lv)}));
+  // rotulado del cloroplasto: vista frontal fija con las partes nombradas
+  let rotCloroOn=false;
+  function pintarRotCloro(on){
+    rotCloroOn=on;rotCloro.visible=on;
+    if(on){V.lock=true;V.autoRotate=false;V.fly(new THREE.Vector3(48,.05,0),6.5,0,Math.PI/2,900);
+      $('#btnRotCloro').textContent='Seguir girando';$('#avisoRotCloro').textContent='Vista fija de frente: cada rótulo marca una parte del cloroplasto.'}
+    else{V.lock=false;V.autoRotate=true;
+      $('#btnRotCloro').textContent='Rotular el cloroplasto';$('#avisoRotCloro').textContent=''}
+  }
+  $('#btnRotCloro').addEventListener('click',()=>pintarRotCloro(!rotCloroOn));
 }
 /* parte 3: ecuación */
 (function(){
