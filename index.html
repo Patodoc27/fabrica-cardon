@@ -335,13 +335,15 @@ table.datos td.num{font-family:var(--f-dato);text-align:right}
           <div class="campo"><label>Sección</label>
             <div class="opc" id="seccion" style="display:flex;flex-wrap:wrap;gap:8px"><button data-v="A">Sección A</button><button data-v="B">Sección B</button></div></div>
           <div id="regPart" style="margin-top:16px;border-top:1px dashed color-mix(in srgb,var(--sol) 45%,transparent);padding-top:14px">
-            <span class="eyebrow">Registro de participación</span>
-            <p class="texto" style="margin:4px 0 10px">Los equipos que ya terminaron quedan acá con su mejor nota. Si quieren mejorar la suya, pueden volver a realizar la cápsula completa.</p>
-            <div class="opc" id="regTabs" style="display:flex;gap:8px;margin-bottom:10px"><button data-v="A" class="sel">1° A</button><button data-v="B">1° B</button></div>
-            <div class="regLista" id="regLista"><p class="muted">Cargando…</p></div>
-            <div style="margin-top:10px;display:flex;gap:10px;flex-wrap:wrap">
-              <button class="btn" id="btnRegActualizar" type="button">Actualizar lista</button>
-              <button class="btn btn--pri" id="btnRehacer" type="button">Volver a realizar la cápsula</button>
+            <button class="btn" id="btnRegPart" type="button" aria-expanded="false">Registro de participación</button>
+            <div id="regPanel" hidden style="margin-top:12px">
+              <p class="texto" style="margin:4px 0 10px">Los equipos que ya terminaron quedan acá con su mejor nota. Si quieren mejorar la suya, pueden volver a realizar la cápsula completa.</p>
+              <div class="opc" id="regTabs" style="display:flex;gap:8px;margin-bottom:10px"><button data-v="A" class="sel">1° A</button><button data-v="B">1° B</button></div>
+              <div class="regLista" id="regLista"><p class="muted">Cargando…</p></div>
+              <div style="margin-top:10px;display:flex;gap:10px;flex-wrap:wrap">
+                <button class="btn" id="btnRegActualizar" type="button">Actualizar lista</button>
+                <button class="btn btn--pri" id="btnRehacer" type="button">Volver a realizar la cápsula</button>
+              </div>
             </div>
           </div>
         </div>
@@ -1740,6 +1742,12 @@ function pintarReg(cur){
   box.innerHTML=arr.map(function(e){return '<div class="fila"><span><b>'+escT(e.nombre)+'</b><small>'+escT(e.fin||'')+'</small></span><span class="nota">'+e.n+'/10</span></div>'}).join('');
 }
 if($('#regTabs')){
+  $('#btnRegPart').addEventListener('click',function(){
+    const p=$('#regPanel'),abrir=p.hidden;
+    p.hidden=!abrir;this.setAttribute('aria-expanded',abrir?'true':'false');
+    this.textContent=abrir?'Registro de participación ▴':'Registro de participación';
+    if(abrir&&!REG.data)cargarRegistro();
+  });
   $('#regTabs').addEventListener('click',function(e){const b=e.target.closest('button');if(!b)return;
     $$('#regTabs button').forEach(function(x){x.classList.toggle('sel',x===b)});pintarReg(b.dataset.v)});
   $('#btnRegActualizar').addEventListener('click',cargarRegistro);
@@ -1747,7 +1755,6 @@ if($('#regTabs')){
     if(confirm('Se borra el avance guardado en esta computadora y la cápsula empieza de nuevo. ¿Están seguros?')){
       try{localStorage.removeItem(KEY)}catch(e){}location.reload()}
   });
-  cargarRegistro();
 }
 function armarFicha(){
   const t=S.txt;const L=[];
