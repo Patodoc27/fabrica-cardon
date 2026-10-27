@@ -1749,7 +1749,7 @@ $('#corregir').addEventListener('click',()=>{
   S.nota=ok;save();mostrarNota();
 });
 function mostrarNota(){$('#resultado').hidden=false;$('#nota').textContent=`${S.nota} de 10`;$('#corregir').disabled=true;S.done.cierre=true;save();pintarRiel();armarFicha();enviarRegistro()}
-const SHEET_URL='https://script.google.com/macros/s/AKfycbxSIDhIeQHFZQJWb3lATc5VznT0QhcABQHOQzB4Z9MWdoOff-9OryC1QHAdk-ktOdho/exec';
+const SHEET_URL='https://script.google.com/macros/s/AKfycbwDqA7PXKiy8atImp2HLbKSH9N_kyPOTNlNBdKA24g3PW0kFEubkol51-YFGGrA9jAEHw/exec';
 function enviarRegistro(){
   if(S.reg)return;S.reg=1;save();
   const aviso=$('#fbEnvio');
