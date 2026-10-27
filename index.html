@@ -1767,7 +1767,7 @@ function escT(s){return (s||'').toString().replace(/&/g,'&amp;').replace(/</g,'&
 function cargarRegistro(){
   const box=$('#regLista');if(!box)return;box.innerHTML='<p class="muted">Cargando…</p>';
   fetch(SHEET_URL).then(function(r){return r.json()}).then(function(rows){
-    REG.data=Array.isArray(rows)?rows:[];pintarReg(REG.cur);
+    REG.data=Array.isArray(rows)?rows.filter(function(r){return String(r.capsula||'Fotosíntesis')==='Fotosíntesis'}):[];pintarReg(REG.cur);
   }).catch(function(){box.innerHTML='<p class="muted">No se pudo cargar el registro. Revisen la conexión y toquen "Actualizar lista".</p>'});
 }
 function notaDe(v){
